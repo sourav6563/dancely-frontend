@@ -19,8 +19,7 @@ import { formatViews } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 import { usePlaylist } from '@/lib/hooks/usePlaylists';
 import { PlaylistQueue } from '@/components/playlist/PlaylistQueue';
-import { CldVideoPlayer } from 'next-cloudinary';
-import 'next-cloudinary/dist/cld-video-player.css';
+
 import { OtherVideos } from '@/components/video/OtherVideos';
 import { ShareVideoModal } from '@/components/video/ShareVideoModal';
 import { Share2 } from 'lucide-react';
@@ -39,7 +38,7 @@ export default function WatchVideoPage() {
   const [isAddToPlaylistOpen, setIsAddToPlaylistOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [playerId] = useState(() => `player-${videoId}-${Math.random().toString(36).substr(2, 9)}`);
+
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   const { data: video, isLoading, isError } = useVideoById(videoId);
@@ -101,24 +100,17 @@ export default function WatchVideoPage() {
                 <Skeleton className="aspect-video w-full rounded-lg" />
               ) : (
               <div className="bg-black rounded-lg overflow-hidden aspect-video border border-border/50 shadow-xl [&_.cld-video-player]:h-full [&_.cld-video-player]:w-full">
-                  <CldVideoPlayer
-                    key={playerId}
-                    id={playerId}
-                    width="1920"
-                    height="1080"
-                    src={video?.videoFile.public_id || ''}
-                    poster={video?.thumbnail.url || ''}
-                    colors={{
-                      accent: "#9333ea", // Purple-600 for progress bar
-                    }}
-                    logo={false}
+                  <video
+                    className="w-full h-full object-contain bg-black"
+                    controls
+                    autoPlay
+                    playsInline
+                    poster={video?.thumbnail.url}
+                    src={video?.videoFile.url}
                     onEnded={handleVideoEnded}
-                    autoplay
-                    // New videos have HLS ('hd' profile), so prioritize it.
-                    sourceTypes={['hls', 'dash', 'mp4']}
-                    transformation={{ streaming_profile: 'hd' }}
-                    className="w-full h-full object-cover"
-                  />
+                  >
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
               )}
 
