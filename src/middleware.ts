@@ -16,13 +16,19 @@ const PROTECTED_ROUTES = [
 ];
 
 // Homepage removed - it should be accessible to everyone (shows different content based on auth)
-const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password", "/verify-email"];
+const AUTH_ROUTES = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/verify-email",
+];
 
 /**
  * Next.js 16 Proxy for route protection
  * Runs before every request to check auth state
  */
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("accessToken");
 
