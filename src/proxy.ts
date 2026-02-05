@@ -28,7 +28,7 @@ const AUTH_ROUTES = [
  * Next.js 16 Proxy for route protection
  * Runs before every request to check auth state
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("accessToken");
 
