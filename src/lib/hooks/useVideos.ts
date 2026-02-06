@@ -253,15 +253,13 @@ export function useTogglePublishStatus() {
   return useMutation({
     mutationFn: (videoId: string) => videoApi.togglePublishStatus(videoId),
     onSuccess: (response) => {
-      const { videoId, isPublished } = response.data;
+      const { videoId } = response.data;
       queryClient.invalidateQueries({ queryKey: ["video", videoId] });
       queryClient.invalidateQueries({ queryKey: ["videos"] });
       queryClient.invalidateQueries({ queryKey: ["my-videos"] });
-      toast.success(`Video is now ${isPublished ? "Public" : "Private"}`);
+      // toast handled in component
     },
-    onError: (error: ApiError) => {
-      toast.error(error.response?.data?.message || "Failed to update visibility");
-    },
+    // onError handled in component
   });
 }
 

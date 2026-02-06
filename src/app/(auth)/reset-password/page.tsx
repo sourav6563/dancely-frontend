@@ -154,7 +154,7 @@ function ResetPasswordContent() {
                           type="text"
                           placeholder="Enter 6-digit code"
                           disabled={resetPasswordMutation.isPending}
-                          className="h-11 text-center text-2xl tracking-widest"
+                          className="h-11 text-center text-lg md:text-2xl tracking-widest placeholder:tracking-normal"
                           maxLength={6}
                           {...field}
                         />

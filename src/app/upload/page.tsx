@@ -35,6 +35,7 @@ import { AxiosProgressEvent } from 'axios';
 export default function UploadPage() {
   const router = useRouter();
   const [title, setTitle] = useState('');
+  const [titleError, setTitleError] = useState('');
   const [description, setDescription] = useState('');
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -60,11 +61,11 @@ export default function UploadPage() {
       );
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setIsSuccess(true);
       toast.success('Video uploaded successfully!');
       setTimeout(() => {
-        router.push(`/watch/${data._id}`);
+        router.push(`/dashboard`);
       }, 2000);
     },
     onError: (error: ApiError) => {
@@ -161,8 +162,9 @@ export default function UploadPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      toast.error('Please enter a title');
+    if (title.trim().length < 3) {
+      setTitleError('Title must be at least 3 characters');
+      toast.error('Title must be at least 3 characters');
       return;
     }
 
@@ -200,7 +202,7 @@ export default function UploadPage() {
                 Upload Successful!
               </CardTitle>
               <CardDescription className="dark:text-gray-400">
-                Your video has been uploaded. Redirecting to watch page...
+                Your video has been uploaded. Redirecting to your dashboard...
               </CardDescription>
             </CardHeader>
           </Card>
@@ -359,12 +361,20 @@ export default function UploadPage() {
                     type="text"
                     placeholder="Give your video an amazing title..."
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      if (titleError) setTitleError('');
+                    }}
                     disabled={uploadMutation.isPending}
                     className="h-10"
                     maxLength={100}
+                    aria-invalid={!!titleError}
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 text-right">{title.length}/100</p>
+                  {titleError ? (
+                    <p className="text-xs text-red-500 font-medium">{titleError}</p>
+                  ) : (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 text-right">{title.length}/100</p>
+                  )}
                 </div>
 
                 {/* Description */}

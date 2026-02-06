@@ -39,7 +39,7 @@ interface EditVideoModalProps {
   onClose: () => void;
 }
 
-const updateSchema = z.object({
+  const updateSchema = z.object({
   title: z
     .string()
     .min(3, "Title must be at least 3 characters")
@@ -49,6 +49,7 @@ const updateSchema = z.object({
     .max(500, "Description must be less than 500 characters")
     .optional()
     .or(z.literal("")),
+  isPublished: z.boolean(),
 });
 
 type UpdateFormValues = z.infer<typeof updateSchema>;
@@ -72,6 +73,7 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
     defaultValues: {
       title: video.title,
       description: video.description,
+      isPublished: video.isPublished,
     },
   });
 
@@ -83,6 +85,7 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
       reset({
         title: video.title,
         description: video.description,
+        isPublished: video.isPublished,
       });
       // eslint-disable-next-line
       setThumbnailPreview(video.thumbnail.url);
@@ -104,35 +107,26 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
       promises.push(updateThumbnail.mutateAsync({ videoId: video._id, thumbnail: thumbnailFile }));
     }
 
+    // Check if publish status changed
+    if (data.isPublished !== video.isPublished) {
+      promises.push(togglePublish.mutateAsync(video._id));
+    }
+
     // Execute all properties
     const results = await Promise.allSettled(promises);
 
-    const detailsResult = results[0];
-    const thumbnailResult = thumbnailFile ? results[1] : null;
+    const failedResults = results.filter(r => r.status === 'rejected');
 
-    // Check statuses
-    const detailsFailed = detailsResult.status === "rejected";
-    const thumbnailFailed = thumbnailResult && thumbnailResult.status === "rejected";
-
-    if (!detailsFailed && !thumbnailFailed) {
+    if (failedResults.length === 0) {
       // Success case
       toast.success("Video updated successfully");
       onClose();
     } else {
       // Failure Reporting
-      if (detailsFailed) {
-        const msg = detailsResult.reason?.response?.data?.message || "Failed to update details";
-        toast.error(msg);
-      }
-      if (thumbnailFailed) {
-        const msg = thumbnailResult.reason?.response?.data?.message || "Failed to upload thumbnail";
-        toast.error(msg);
-      }
-
-      // If partial success (e.g. details saved but thumbnail failed),
-      // the data is already dirty on server but form is open.
-      // We could reload form values here to reflect partial success but
-      // standard 'edit' behavior is usually fine to leave as is so user can retry the failed part.
+      // Just start showing the first error message
+      const firstFailure = failedResults[0] as PromiseRejectedResult;
+      const msg = firstFailure.reason?.response?.data?.message || "Failed to update video";
+      toast.error(msg);
     }
   };
 
@@ -143,10 +137,6 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
       const url = URL.createObjectURL(file);
       setThumbnailPreview(url);
     }
-  };
-
-  const handlePublishToggle = () => {
-    togglePublish.mutate(video._id);
   };
 
   const handleDelete = () => {
@@ -172,7 +162,7 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
     });
   };
 
-  const isProcessing = updateDetails.isPending || updateThumbnail.isPending;
+  const isProcessing = updateDetails.isPending || updateThumbnail.isPending || togglePublish.isPending;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -281,37 +271,41 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
           </div>
 
           {/* Visibility Section */}
-          <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/20">
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <Label className="text-base font-medium">Visibility</Label>
-                {video.isPublished ? (
-                  <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 border border-green-500/20">
-                    <Globe className="h-3 w-3" /> Public
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                    <Lock className="h-3 w-3" /> Private
-                  </span>
-                )}
+          <FormField
+            control={form.control}
+            name="isPublished"
+            render={({ field }) => (
+              <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/20">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-base font-medium">Visibility</Label>
+                    {field.value ? (
+                      <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 border border-green-500/20">
+                        <Globe className="h-3 w-3" /> Public
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                        <Lock className="h-3 w-3" /> Private
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {field.value
+                      ? "Your video is visible to everyone."
+                      : "Only you can see this video (Draft)."}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant={field.value ? "outline" : "default"}
+                  size="sm"
+                  onClick={() => field.onChange(!field.value)}
+                >
+                  {field.value ? "Unpublish" : "Publish"}
+                </Button>
               </div>
-              <p className="text-sm text-muted-foreground">
-                {video.isPublished
-                  ? "Your video is visible to everyone."
-                  : "Only you can see this video (Draft)."}
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant={video.isPublished ? "outline" : "default"}
-              size="sm"
-              onClick={handlePublishToggle}
-              disabled={togglePublish.isPending}
-            >
-              {togglePublish.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {video.isPublished ? "Unpublish" : "Publish"}
-            </Button>
-          </div>
+            )}
+          />
 
           {/* Actions Footer */}
           <div className="flex items-center justify-between pt-4 border-t">
