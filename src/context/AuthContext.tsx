@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, ReactNode, useEffect } from 'react';
+import { createContext, useContext, ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '@/lib/api/auth';
@@ -20,6 +20,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isLoggingOut: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
@@ -30,11 +31,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Cleanup function for logout (used in both success and error cases)
   const handleLogoutCleanup = () => {
+    // Clear all cached data first
     queryClient.clear();
+    // Then set user data to null immediately to prevent loading state
+    // This ensures LandingPage with Login/Join buttons is shown right away
+    queryClient.setQueryData(['auth', 'me'], null);
+    
     router.push('/');
+    
+    // Reset logout state after a delay to ensure transition is complete
+    // and prevent ProtectedRoute from redirecting to login
+    setTimeout(() => {
+      setIsLoggingOut(false);
+    }, 2000);
   };
 
   // Listen for auth-invalidated events from the API client
@@ -97,6 +110,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
+    onMutate: () => {
+      setIsLoggingOut(true);
+    },
     onSuccess: () => {
       toast.success('Logged out successfully');
       handleLogoutCleanup();
@@ -124,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user: userData || null,
     isAuthenticated: !!userData,
     isLoading: isLoading,
+    isLoggingOut,
     login: async (credentials) => {
       await loginMutation.mutateAsync(credentials);
     },

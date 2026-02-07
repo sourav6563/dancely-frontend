@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Upload, User, Settings, LogOut, Home, Heart, History, Folder, Search, Video, MessageSquare } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 /**
@@ -34,7 +35,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
  * Shows different UI based on authentication status
  */
 export function Navbar() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
@@ -89,7 +90,13 @@ export function Navbar() {
           )}
 
           {/* Navigation Links & User Menu */}
-          {isAuthenticated && user ? (
+          {isLoading ? (
+             <div className="flex items-center space-x-4">
+               <Skeleton className="h-9 w-20 rounded-md" />
+               <Skeleton className="h-9 w-20 rounded-md" />
+               <Skeleton className="h-10 w-10 rounded-full" />
+             </div>
+          ) : isAuthenticated && user ? (
             <div className="flex items-center space-x-2 sm:space-x-6">
               {/* Navigation Links */}
               <nav className="hidden md:flex items-center space-x-2">

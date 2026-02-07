@@ -193,7 +193,7 @@ export function PlaylistCard({ playlist, isOwner = false }: PlaylistCardProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Playlist?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete &quot;{playlist.name}&quot;? This cannot be undone.
+              Are you sure you want to delete this playlist? This cannot be undone.
               (Videos inside will not be deleted)
             </AlertDialogDescription>
           </AlertDialogHeader>

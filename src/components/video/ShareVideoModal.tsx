@@ -75,7 +75,7 @@ export function ShareVideoModal({
 
         <div className="flex flex-col gap-6 py-6">
           {videoTitle && (
-            <div className="bg-muted/30 p-4 rounded-xl border border-border/50 text-sm font-medium line-clamp-2">
+            <div className="bg-muted/30 p-4 rounded-xl border border-border/50 text-sm font-medium line-clamp-2 break-all">
               {videoTitle}
             </div>
           )}
