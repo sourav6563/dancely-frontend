@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '@/lib/api/auth';
@@ -36,6 +36,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryClient.clear();
     router.push('/');
   };
+
+  // Listen for auth-invalidated events from the API client
+  // This happens when refresh token fails, indicating stale auth state
+  useEffect(() => {
+    const handleAuthInvalidated = () => {
+      // Clear all cached data to reset auth state
+      queryClient.clear();
+      // The user will now see the landing page since isAuthenticated will be false
+    };
+
+    window.addEventListener('auth-invalidated', handleAuthInvalidated);
+    return () => {
+      window.removeEventListener('auth-invalidated', handleAuthInvalidated);
+    };
+  }, [queryClient]);
 
   // Fetch current user if token exists
   const {

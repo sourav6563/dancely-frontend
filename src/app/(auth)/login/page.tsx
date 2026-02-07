@@ -26,7 +26,7 @@ import { Footer } from '@/components/layout/Footer';
  */
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -58,7 +58,9 @@ export default function LoginPage() {
     }
   };
 
-  const isLoading = isSubmitting || authLoading;
+  // Only disable form during active submission, not during background auth check
+  // This prevents the page from getting stuck when there are stale tokens
+  const isLoading = isSubmitting;
 
   return (
     <div className="flex flex-col min-h-screen">

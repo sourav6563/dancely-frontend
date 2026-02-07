@@ -32,10 +32,11 @@ const processQueue = (error: unknown) => {
   failedQueue = [];
 };
 
-// Helper function to redirect to login page
-const redirectToLogin = (): void => {
-  if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-    window.location.href = "/login";
+// Helper to dispatch a custom event when auth session is invalidated
+// This allows AuthContext to react and clear its state
+const dispatchAuthInvalidated = (): void => {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("auth-invalidated"));
   }
 };
 
@@ -49,6 +50,8 @@ api.interceptors.response.use(
 
     // Prevent infinite loop if the refresh token endpoint itself fails
     if (originalRequest.url?.includes("/auth/refresh-token")) {
+      // Refresh token itself failed - dispatch event to clear auth state
+      dispatchAuthInvalidated();
       return Promise.reject(error);
     }
 
@@ -56,8 +59,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       const errorMessage = error.response?.data?.message;
 
-      // Don't redirect to login if the failed request is /auth/me, /auth/login, or /auth/register
-      // This allows unauthenticated users to see the landing page or handle login errors gracefully
+      // Don't try to refresh for login/register endpoints
       if (
         originalRequest.url?.includes("/auth/login") ||
         originalRequest.url?.includes("/auth/register")
@@ -65,12 +67,9 @@ api.interceptors.response.use(
         return Promise.reject(error);
       }
 
-      // Optimization: Only try to refresh if the token is specifically expired.
-      // If the error is "UNAUTHORIZED" (missing/invalid), refresh will fail anyway.
+      // Only try to refresh if the token is specifically expired.
+      // For other 401 errors (missing/invalid token), just reject
       if (errorMessage !== "ACCESS_TOKEN_EXPIRED") {
-        if (!originalRequest.url?.includes("/auth/me")) {
-          redirectToLogin();
-        }
         return Promise.reject(error);
       }
 
@@ -98,10 +97,8 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
-        // Refresh failed, redirect to login ONLY if it wasn't a background auth check
-        if (!originalRequest.url?.includes("/auth/me")) {
-          redirectToLogin();
-        }
+        // Refresh failed - dispatch event to clear auth state
+        dispatchAuthInvalidated();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
