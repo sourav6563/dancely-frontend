@@ -32,6 +32,14 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("accessToken");
 
+  // Debug: Log cookies to Vercel/Server logs
+  console.log(`[Middleware] Processing ${pathname}`);
+  console.log(
+    `[Middleware] Cookies found:`,
+    request.cookies.getAll().map((c) => c.name),
+  );
+  console.log(`[Middleware] AccessToken value:`, accessToken?.value ? "Present" : "Missing");
+
   /**
    * Helper: Matches path against a list of routes.
    * - "/" matches EXACTLY "/".
