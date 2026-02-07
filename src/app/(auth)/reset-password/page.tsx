@@ -248,7 +248,7 @@ function ResetPasswordContent() {
             <p className="text-center text-sm text-gray-600 dark:text-gray-400">
               Remember your password?{' '}
               <Link href="/login" className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold hover:underline">
-                Sign in
+                Login
               </Link>
             </p>
           </CardFooter>
