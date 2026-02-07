@@ -66,11 +66,14 @@ export default function SettingsPage() {
     },
   });
 
+  // Get max image size from ENV (default 5MB)
+  const MAX_IMAGE_SIZE_MB = Number(process.env.NEXT_PUBLIC_MAX_IMAGE_SIZE_MB) || 5;
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('Image must be less than 5MB');
+      if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+        toast.error(`Image must be less than ${MAX_IMAGE_SIZE_MB}MB`);
         return;
       }
       setSelectedImage(file);
@@ -272,7 +275,7 @@ export default function SettingsPage() {
                             />
                           </Label>
                           <p className="text-xs text-gray-500">
-                            JPG, GIF or PNG. Max size of 5MB.
+                            JPG, GIF or PNG. Max size of {MAX_IMAGE_SIZE_MB}MB.
                           </p>
                         </div>
                       </div>

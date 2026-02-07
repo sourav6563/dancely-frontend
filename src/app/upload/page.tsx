@@ -85,9 +85,9 @@ export default function UploadPage() {
     }
   };
 
-  // Get max size from ENV (default 100MB for video, 5MB for thumbnail)
+  // Get max size from ENV (default 100MB for video, 5MB for images)
   const MAX_VIDEO_SIZE_MB = Number(process.env.NEXT_PUBLIC_MAX_VIDEO_SIZE_MB) || 100;
-  const MAX_THUMBNAIL_SIZE_MB = Number(process.env.NEXT_PUBLIC_MAX_THUMBNAIL_SIZE_MB) || 5;
+  const MAX_IMAGE_SIZE_MB = Number(process.env.NEXT_PUBLIC_MAX_IMAGE_SIZE_MB) || 5;
 
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -117,8 +117,8 @@ export default function UploadPage() {
         return;
       }
       // Validate file size
-      if (file.size > MAX_THUMBNAIL_SIZE_MB * 1024 * 1024) {
-        toast.error(`Thumbnail must be less than ${MAX_THUMBNAIL_SIZE_MB}MB`);
+      if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+        toast.error(`Thumbnail must be less than ${MAX_IMAGE_SIZE_MB}MB`);
         return;
       }
       setThumbnail(file);
@@ -146,14 +146,14 @@ export default function UploadPage() {
            toast.error('Invalid image format. Only JPEG and PNG are allowed.');
            return;
         }
-        if (file.size > MAX_THUMBNAIL_SIZE_MB * 1024 * 1024) {
-          toast.error(`Thumbnail must be less than ${MAX_THUMBNAIL_SIZE_MB}MB`);
+        if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+          toast.error(`Thumbnail must be less than ${MAX_IMAGE_SIZE_MB}MB`);
           return;
         }
         setThumbnail(file);
       }
     }
-  }, [MAX_VIDEO_SIZE_MB, MAX_THUMBNAIL_SIZE_MB]);
+  }, [MAX_VIDEO_SIZE_MB, MAX_IMAGE_SIZE_MB]);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -324,7 +324,7 @@ export default function UploadPage() {
                         <ImageIcon className="mx-auto h-10 w-10 text-gray-400" />
                         <p className="font-medium text-sm">Drop your thumbnail here, or click to browse</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                           Max size: {MAX_THUMBNAIL_SIZE_MB}MB. Allowed Format: JPEG, PNG. Recommended: 1280x720
+                           Max size: {MAX_IMAGE_SIZE_MB}MB. Allowed Format: JPEG, PNG. Recommended: 1280x720
                         </p>
                       </div>
                     )}

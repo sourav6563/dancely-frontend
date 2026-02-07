@@ -138,7 +138,7 @@ function VerifyEmailPageContent() {
                           type="text"
                           placeholder="Enter 6-digit code"
                           disabled={verifyMutation.isPending}
-                          className="h-11 text-center text-lg md:text-2xl tracking-widest placeholder:tracking-normal"
+                          className="h-11 text-center text-base tracking-widest placeholder:tracking-normal placeholder:text-sm"
                           maxLength={6}
                           {...field}
                         />

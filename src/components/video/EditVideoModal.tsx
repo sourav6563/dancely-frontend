@@ -65,8 +65,8 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
   const togglePublish = useTogglePublishStatus();
   const deleteVideo = useDeleteVideo();
 
-  // Get max thumbnail size from ENV (default 5MB)
-  const MAX_THUMBNAIL_SIZE_MB = Number(process.env.NEXT_PUBLIC_MAX_THUMBNAIL_SIZE_MB) || 5;
+  // Get max image size from ENV (default 5MB)
+  const MAX_IMAGE_SIZE_MB = Number(process.env.NEXT_PUBLIC_MAX_IMAGE_SIZE_MB) || 5;
 
   const form = useForm<UpdateFormValues>({
     resolver: zodResolver(updateSchema),
@@ -197,7 +197,7 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
               </div>
               <div className="flex-1 space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  Upload a new thumbnail (JPG/PNG). Max size: {MAX_THUMBNAIL_SIZE_MB}MB. Recommended: 1280x720.
+                  Upload a new thumbnail (JPG/PNG). Max size: {MAX_IMAGE_SIZE_MB}MB. Recommended: 1280x720.
                 </p>
                 <div className="flex items-center gap-2">
                   <Label htmlFor="thumbnail-upload" className="cursor-pointer">
