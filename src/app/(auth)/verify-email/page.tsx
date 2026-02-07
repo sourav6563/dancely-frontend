@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/lib/api/auth';
+import { ApiError } from '@/types';
 import { verifyEmailSchema, type VerifyEmailValues } from '@/lib/validators/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,8 +44,7 @@ function VerifyEmailPageContent() {
       toast.success('Email verified successfully!');
       setTimeout(() => router.push('/login'), 2000);
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       toast.error(err.response?.data?.message || 'Verification failed');
     },
   });

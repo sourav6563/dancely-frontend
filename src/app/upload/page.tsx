@@ -61,11 +61,11 @@ export default function UploadPage() {
       );
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setIsSuccess(true);
       toast.success('Video uploaded successfully!');
       setTimeout(() => {
-        router.push(`/dashboard`);
+        router.push(`/watch/${data._id}`);
       }, 2000);
     },
     onError: (error: ApiError) => {
@@ -202,7 +202,7 @@ export default function UploadPage() {
                 Upload Successful!
               </CardTitle>
               <CardDescription className="dark:text-gray-400">
-                Your video has been uploaded. Redirecting to your dashboard...
+                Your video has been uploaded. Redirecting to watch page...
               </CardDescription>
             </CardHeader>
           </Card>

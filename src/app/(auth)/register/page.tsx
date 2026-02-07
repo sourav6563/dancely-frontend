@@ -9,6 +9,7 @@ import { useDebounceCallback } from 'usehooks-ts';
 import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '@/context/AuthContext';
 import { authApi } from '@/lib/api/auth';
+import { ApiError } from '@/types';
 import { registerSchema, type RegisterValues } from '@/lib/validators/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -91,8 +92,7 @@ export default function RegisterPage() {
       toast.success('Account created! Please verify your email.');
       router.push(`/verify-email?email=${encodeURIComponent(form.getValues('email'))}`);
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (err: any) => {
+    onError: (err: ApiError) => {
       toast.error(err.response?.data?.message || 'Registration failed. Please try again.');
     },
   });

@@ -45,9 +45,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryKey: ['auth', 'me'],
     queryFn: async () => {
       const response = await authApi.getCurrentUser();
-      return response.data;
+      return response.data || null;
     },
-    retry: false, // Don't retry if it fails (means user is not authenticated)
+    retry: (failureCount, error: ApiError) => {
+      const status = error.response?.status;
+      // Don't retry on client errors (401, 403, 404), as these mean the user is genuinely not authenticated
+      if (status && status >= 400 && status < 500) {
+        return false;
+      }
+      // Retry up to 3 times for network/server errors
+      return failureCount < 3;
+    },
     staleTime: 1000 * 60 * 5, // Cache user data for 5 minutes
   });
 

@@ -11,7 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useVideoById, useVideoComments } from '@/lib/hooks/useVideoWatch';
 import { useToggleVideoLike, useToggleFollow } from '@/lib/hooks/useVideos';
-import { Heart, UserPlus, UserCheck, ListPlus, Pencil } from 'lucide-react';
+import { Heart, UserPlus, UserCheck, ListPlus, Pencil, Lock, Globe } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { AddToPlaylistModal } from '@/components/playlist/AddToPlaylistModal';
 import { EditVideoModal } from '@/components/video/EditVideoModal';
 import { formatDistanceToNow } from 'date-fns';
@@ -123,8 +124,33 @@ export default function WatchVideoPage() {
                 </div>
               ) : video ? (
                 <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 shadow-sm">
-                  {/* Title */}
-                  <h1 className="text-lg md:text-2xl font-bold text-card-foreground line-clamp-2">{video.title}</h1>
+                  {/* Title and Visibility Badge */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h1 className="text-lg md:text-2xl font-bold text-card-foreground line-clamp-2">{video.title}</h1>
+                    {user?._id === video.owner._id && (
+                      <Badge 
+                        variant="secondary" 
+                        className={`
+                          ${video.isPublished 
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800" 
+                            : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800"
+                          }
+                        `}
+                      >
+                        {video.isPublished ? (
+                          <>
+                            <Globe className="h-3 w-3 mr-1" />
+                            Public
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="h-3 w-3 mr-1" />
+                            Private
+                          </>
+                        )}
+                      </Badge>
+                    )}
+                  </div>
 
                   {/* Action Bar: Owner & Interactions */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api/v1",
   withCredentials: true, // Important: Send cookies with requests
   headers: {
     "Content-Type": "application/json",
@@ -59,7 +59,6 @@ api.interceptors.response.use(
       // Don't redirect to login if the failed request is /auth/me, /auth/login, or /auth/register
       // This allows unauthenticated users to see the landing page or handle login errors gracefully
       if (
-        originalRequest.url?.includes("/auth/me") ||
         originalRequest.url?.includes("/auth/login") ||
         originalRequest.url?.includes("/auth/register")
       ) {
@@ -69,7 +68,9 @@ api.interceptors.response.use(
       // Optimization: Only try to refresh if the token is specifically expired.
       // If the error is "UNAUTHORIZED" (missing/invalid), refresh will fail anyway.
       if (errorMessage !== "ACCESS_TOKEN_EXPIRED") {
-        redirectToLogin();
+        if (!originalRequest.url?.includes("/auth/me")) {
+          redirectToLogin();
+        }
         return Promise.reject(error);
       }
 
@@ -97,8 +98,10 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
-        // Refresh failed, redirect to login
-        redirectToLogin();
+        // Refresh failed, redirect to login ONLY if it wasn't a background auth check
+        if (!originalRequest.url?.includes("/auth/me")) {
+          redirectToLogin();
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

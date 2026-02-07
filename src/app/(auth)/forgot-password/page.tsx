@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { Loader2, Mail } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import type { ApiError } from '@/types';
 
 /**
  * Forgot Password Page
@@ -36,8 +37,19 @@ export default function ForgotPasswordPage() {
       setCodeSent(true);
       toast.success('Reset code sent to your email!');
     },
-    onError: () => {
-      toast.error('Failed to send reset code');
+    onError: (error: ApiError) => {
+      const errorMessage = error.response?.data?.message || 'Failed to send reset code';
+      const status = error.response?.status;
+
+      if (status === 404 || errorMessage.toLowerCase().includes('not found') || errorMessage.toLowerCase().includes('not registered')) {
+        // UX Best Practice: Use inline form errors for input-specific issues
+        form.setError('email', {
+          type: 'manual',
+          message: 'No account found with this email address.',
+        });
+      } else {
+        toast.error(errorMessage);
+      }
     },
   });
 
@@ -121,6 +133,15 @@ export default function ForgotPasswordPage() {
                         />
                       </FormControl>
                       <FormMessage />
+                      {/* Helper for Not Found Error */}
+                      {form.formState.errors.email?.message === 'No account found with this email address.' && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Don&apos;t have an account?{' '}
+                          <Link href="/register" className="text-purple-600 hover:underline font-medium">
+                            Join now
+                          </Link>
+                        </p>
+                      )}
                     </FormItem>
                   )}
                 />
