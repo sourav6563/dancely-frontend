@@ -50,6 +50,7 @@ api.interceptors.response.use(
 
     // Prevent infinite loop if the refresh token endpoint itself fails
     if (originalRequest.url?.includes("/auth/refresh-token")) {
+      console.warn("[API] Refresh token failed. Dispatching auth-invalidated.");
       // Refresh token itself failed - dispatch event to clear auth state
       dispatchAuthInvalidated();
       return Promise.reject(error);
@@ -67,9 +68,12 @@ api.interceptors.response.use(
         return Promise.reject(error);
       }
 
+      console.log("[API] 401 error detected. Message:", errorMessage);
+
       // Only try to refresh if the token is specifically expired.
       // For other 401 errors (missing/invalid token), just reject
       if (errorMessage !== "ACCESS_TOKEN_EXPIRED") {
+        console.warn("[API] 401 error is NOT ACCESS_TOKEN_EXPIRED. Rejecting.");
         return Promise.reject(error);
       }
 
@@ -89,13 +93,16 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        console.log("[API] Attempting to refresh access token...");
         // Try to refresh the access token
         await api.post("/auth/refresh-token");
+        console.log("[API] Refresh successful. Retrying original request.");
 
         // Retry original request (browser will automatically send the new cookies)
         processQueue(null);
         return api(originalRequest);
       } catch (refreshError) {
+        console.error("[API] Refresh failed:", refreshError);
         processQueue(refreshError);
         // Refresh failed - dispatch event to clear auth state
         dispatchAuthInvalidated();

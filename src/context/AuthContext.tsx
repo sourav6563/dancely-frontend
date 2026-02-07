@@ -50,10 +50,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, 2000);
   };
 
+
+
   // Listen for auth-invalidated events from the API client
   // This happens when refresh token fails, indicating stale auth state
   useEffect(() => {
     const handleAuthInvalidated = () => {
+      console.log('[AuthContext] Received auth-invalidated event. Clearing state.');
       // Clear all cached data to reset auth state
       queryClient.clear();
       // The user will now see the landing page since isAuthenticated will be false
@@ -86,6 +89,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     staleTime: 1000 * 60 * 5, // Cache user data for 5 minutes
   });
+
+  // Debug: Log initial render and state changes
+  useEffect(() => {
+    console.log('[AuthContext] State changed:', { 
+      isAuthenticated: !!userData, 
+      isLoading, 
+      isLoggingOut,
+      hasUser: !!userData 
+    });
+  }, [userData, isLoading, isLoggingOut]);
 
   // Login mutation
   const loginMutation = useMutation({
