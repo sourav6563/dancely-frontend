@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,15 +16,10 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 
 /**
- * Login Page
- * 
- * Features:
- * - react-hook-form + zod validation
- * - Uses AuthContext for login state management
- * - Proper error handling with toast notifications
- * - Clean, modern UI following shadcn principles
+ * Login Page Content
+ * Contains the logic that uses useSearchParams
  */
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, isAuthenticated } = useAuth();
@@ -199,5 +194,27 @@ export default function LoginPage() {
       
       <Footer />
     </div>
+  );
+}
+
+/**
+ * Login Page
+ * 
+ * Features:
+ * - react-hook-form + zod validation
+ * - Uses AuthContext for login state management
+ * - Proper error handling with toast notifications
+ * - Clean, modern UI following shadcn principles
+ * - WRAPPED IN SUSPENSE for searchParams support
+ */
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

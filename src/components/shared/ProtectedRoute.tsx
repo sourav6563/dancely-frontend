@@ -1,15 +1,19 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Loader2 } from 'lucide-react';
 
-/**
- * Protected Route Component
- * Redirects to login if user is not authenticated
- */
-export function ProtectedRoute({ children }: { children: React.ReactNode }) {
+function ProtectedRouteLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+    </div>
+  );
+}
+
+function ProtectedRouteContent({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, isLoggingOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -36,11 +40,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, isLoading, isLoggingOut, router, pathname, searchParams]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-      </div>
-    );
+    return <ProtectedRouteLoader />;
   }
 
   if (!isAuthenticated) {
@@ -48,4 +48,17 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   return <>{children}</>;
+}
+
+/**
+ * Protected Route Component
+ * Redirects to login if user is not authenticated
+ * Wrapped in Suspense to handle useSearchParams usage
+ */
+export function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<ProtectedRouteLoader />}>
+      <ProtectedRouteContent>{children}</ProtectedRouteContent>
+    </Suspense>
+  );
 }
