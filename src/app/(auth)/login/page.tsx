@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@/context/AuthContext';
@@ -26,6 +26,7 @@ import { Footer } from '@/components/layout/Footer';
  */
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, isAuthenticated } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -39,18 +40,41 @@ export default function LoginPage() {
     },
   });
 
+  const handleRedirect = useCallback(() => {
+    const from = searchParams.get('from');
+    let redirectUrl = '/';
+
+    if (from) {
+      try {
+        const decoded = decodeURIComponent(from);
+        // Ensure it's a relative path and not a protocol-relative url (//example.com)
+        if (decoded.startsWith('/') && !decoded.startsWith('//')) {
+           // Prevent redirect loops to login page
+           if (!decoded.startsWith('/login')) {
+             redirectUrl = decoded;
+           }
+        }
+      } catch (e) {
+        // Fallback to default redirect on decoding error
+        console.error('Failed to decode redirect URL:', e);
+      }
+    }
+    
+    router.push(redirectUrl);
+  }, [searchParams, router]);
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/');
+      handleRedirect();
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, handleRedirect, router, searchParams]);
 
   const onSubmit = async (data: LoginValues) => {
     setIsSubmitting(true);
     try {
       await login(data);
-      // Navigation happens in AuthContext after successful login
+      handleRedirect();
     } catch {
       // Error toast is already handled in AuthContext
     } finally {

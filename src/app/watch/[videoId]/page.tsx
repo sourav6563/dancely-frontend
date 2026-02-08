@@ -329,7 +329,7 @@ export default function WatchVideoPage() {
 
             {/* Sidebar - Playlist or Related Videos */}
             <div className="lg:col-span-1 space-y-4">
-              {playlist ? (
+              {playlist && (
                 <div className="hidden lg:block">
                   <PlaylistQueue 
                     playlist={playlist} 
@@ -338,11 +338,11 @@ export default function WatchVideoPage() {
                     variant="desktop"
                   />
                 </div>
-              ) : (
-                <div className="block">
-                   <OtherVideos key={videoId} currentVideoId={videoId} />
-                </div>
               )}
+              
+              <div className="block">
+                 <OtherVideos key={videoId} currentVideoId={videoId} />
+              </div>
             </div>
           </div>
         </div>

@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Update the user data in cache
       queryClient.setQueryData(['auth', 'me'], response.data);
       toast.success('Logged in successfully!');
-      router.push('/');
+      // Navigation is now handled by the component calling login
     },
     onError: (error: ApiError) => {
       if (error.response?.status === 400 && error.response?.data?.message === "You are already logged in") {

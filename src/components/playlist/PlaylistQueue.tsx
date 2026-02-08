@@ -24,17 +24,17 @@ export function PlaylistQueue({ playlist, videoId, playlistId, className, varian
 
   return (
     <Card className={cn(
-      "flex flex-col sticky overflow-hidden border-gray-200 dark:border-gray-800 shadow-lg transition-all duration-300 bg-white dark:bg-gray-900",
-      variant === 'desktop' ? "top-24 max-h-[calc(100vh-100px)]" : cn("border-t-0 rounded-t-none md:rounded-lg md:border-t mb-6", isOpen ? "max-h-96" : "max-h-20"),
+      "flex flex-col border-gray-200 dark:border-gray-800 shadow-lg transition-all duration-300 bg-white dark:bg-gray-900",
+      variant === 'desktop' ? "sticky overflow-hidden top-24 max-h-[calc(100vh-100px)]" : cn("rounded-lg border mb-6"),
       className
     )}>
       <div 
         className={cn("p-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors", variant === 'desktop' && "cursor-default hover:bg-white dark:hover:bg-gray-900")}
         onClick={() => variant === 'mobile' && setIsOpen(!isOpen)}
       >
-        <div>
-          <h3 className="font-bold text-lg leading-tight">{playlist.name}</h3>
-          <p className="text-xs text-muted-foreground mt-1">
+        <div className="flex-1 min-w-0 pr-4">
+          <h3 className="font-bold text-lg leading-tight truncate">{playlist.name}</h3>
+          <p className="text-xs text-muted-foreground mt-1 truncate">
             {typeof playlist.owner === 'object' ? playlist.owner.name : 'Unknown'} - {playlist.videos.findIndex((v) => v._id === videoId) + 1} / {playlist.videos.length}
           </p>
         </div>

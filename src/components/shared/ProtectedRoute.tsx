@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Loader2 } from 'lucide-react';
 
@@ -12,12 +12,28 @@ import { Loader2 } from 'lucide-react';
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, isLoggingOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !isLoggingOut) {
-      router.push('/login');
+      // Construct full URL with search params if they exist
+      const queryString = searchParams.toString();
+      const fullUrl = queryString ? `${pathname}?${queryString}` : pathname;
+      
+      // Encode the current path to handle special characters properly
+      const returnUrl = encodeURIComponent(fullUrl);
+      router.push(`/login?from=${returnUrl}`);
     }
-  }, [isAuthenticated, isLoading, isLoggingOut, router]);
+  }, [isAuthenticated, isLoading, isLoggingOut, router, pathname, searchParams]);
 
   if (isLoading) {
     return (
