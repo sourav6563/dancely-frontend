@@ -275,7 +275,7 @@ export default function SettingsPage() {
                             />
                           </Label>
                           <p className="text-xs text-gray-500">
-                            JPG, GIF or PNG. Max size of {MAX_IMAGE_SIZE_MB}MB.
+                            JPG,PNG. Max size of {MAX_IMAGE_SIZE_MB}MB.
                           </p>
                         </div>
                       </div>

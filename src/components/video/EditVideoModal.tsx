@@ -11,6 +11,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -22,7 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, Upload, Trash2, Globe, Lock, AlertTriangle } from "lucide-react";
+import { Loader2, Upload, Trash2, Globe, Lock } from "lucide-react";
 import {
   useUpdateVideoDetails,
   useUpdateVideoThumbnail,
@@ -58,7 +68,7 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
   const router = useRouter();
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(video.thumbnail.url);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   const updateDetails = useUpdateVideoDetails();
   const updateThumbnail = useUpdateVideoThumbnail();
@@ -90,7 +100,7 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
       // eslint-disable-next-line
       setThumbnailPreview(video.thumbnail.url);
       setThumbnailFile(null);
-      setIsDeleting(false);
+      setShowDeleteAlert(false);
     }
   }, [isOpen, video, reset]);
 
@@ -139,12 +149,9 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
     }
   };
 
-  const handleDelete = () => {
-    // We can keep the prompt open or close it. 
-    // Since it redirects, maybe keeping loading state is fine. 
-    // BUT to match the requested pattern: "Processing... then Delete"
+  const handleDelete = async () => {
+    setShowDeleteAlert(false);
     
-    // If we use toast.promise:
     const promise = deleteVideo.mutateAsync(video._id);
     
     toast.promise(promise, {
@@ -153,18 +160,18 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
       error: (err) => err?.response?.data?.message || 'Failed to delete video',
     });
     
-    // We should probably wait for it to finish before redirecting?
-    // The previous implementation had onSuccess router.push.
-    // The onSuccess in the hook is gone now. We need to handle it here.
-    
-    promise.then(() => {
-       router.push("/"); // Redirect after successful deletion
-    });
+    try {
+      await promise;
+      router.push("/");
+    } catch {
+      // Toast already handled error
+    }
   };
 
   const isProcessing = updateDetails.isPending || updateThumbnail.isPending || togglePublish.isPending;
 
   return (
+    <>
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-125 max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 dark:border-gray-800">
         <DialogHeader>
@@ -309,41 +316,15 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
 
           {/* Actions Footer */}
           <div className="flex items-center justify-between pt-4 border-t">
-            {!isDeleting ? (
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                onClick={() => setIsDeleting(true)}
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Video
-              </Button>
-            ) : (
-              <div className="flex items-center gap-2 animate-in slide-in-from-left-2 duration-200">
-                <span className="text-sm font-medium text-red-600 flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4" />
-                  Confirm deletion?
-                </span>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={handleDelete}
-                  disabled={deleteVideo.isPending}
-                >
-                  {deleteVideo.isPending ? "Deleting..." : "Yes, Delete"}
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsDeleting(false)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            )}
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 dark:hover:text-red-400"
+              onClick={() => setShowDeleteAlert(true)}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </Button>
 
             <div className="flex gap-2">
               <Button type="button" variant="outline" onClick={onClose}>
@@ -359,5 +340,30 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
         </Form>
       </DialogContent>
     </Dialog>
+
+    <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
+        <AlertDialogContent className="dark:bg-gray-900 dark:border-gray-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this video?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your video 
+              and remove it from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete();
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white focus:ring-red-600"
+            >
+              {deleteVideo.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

@@ -244,7 +244,7 @@ export default function DashboardPage() {
                                  <span className="sr-only">Open menu</span>
                               </Button>
                             </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
+                          <DropdownMenuContent align="end" className="dark:bg-gray-900 dark:border-gray-800">
                             <DropdownMenuItem onClick={() => setEditingVideo(video)}>
                               <Pencil className="mr-2 h-4 w-4" />
                               <span>Edit</span>
@@ -310,7 +310,7 @@ export default function DashboardPage() {
         )}
 
         <AlertDialog open={!!videoToDelete} onOpenChange={(open) => !open && setVideoToDelete(null)}>
-          <AlertDialogContent>
+        <AlertDialogContent className="dark:bg-gray-900 dark:border-gray-800">
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>

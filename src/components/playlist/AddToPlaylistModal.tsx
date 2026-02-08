@@ -137,7 +137,7 @@ export function AddToPlaylistModal({ videoId, open, onOpenChange }: AddToPlaylis
                            {isIn && <Check className="h-3 w-3 text-white" />}
                          </div>
                          <div className="flex-1 min-w-0">
-                           <p className={`font-medium truncate text-sm mb-0.5 ${isIn ? 'text-purple-700 dark:text-purple-300' : 'text-foreground'}`}>
+                           <p className={`font-medium break-all line-clamp-2 text-sm mb-0.5 ${isIn ? 'text-purple-700 dark:text-purple-300' : 'text-foreground'}`}>
                              {playlist.name}
                            </p>
                            <div className="flex items-center gap-2 text-xs text-muted-foreground">

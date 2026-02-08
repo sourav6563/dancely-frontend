@@ -148,7 +148,7 @@ export function PlaylistCard({ playlist, isOwner = false }: PlaylistCardProps) {
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuContent align="end" className="w-40 dark:bg-gray-900 dark:border-gray-800">
                   <DropdownMenuItem onClick={handleTogglePublish}>
                     {playlist.isPublished ? (
                       <>
@@ -189,7 +189,7 @@ export function PlaylistCard({ playlist, isOwner = false }: PlaylistCardProps) {
       />
 
       <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
-        <AlertDialogContent>
+        <AlertDialogContent className="dark:bg-gray-900 dark:border-gray-800">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Playlist?</AlertDialogTitle>
             <AlertDialogDescription>
