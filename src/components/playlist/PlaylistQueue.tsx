@@ -25,7 +25,8 @@ export function PlaylistQueue({ playlist, videoId, playlistId, className, varian
   return (
     <Card className={cn(
       "flex flex-col border-gray-200 dark:border-gray-800 shadow-lg transition-all duration-300 bg-white dark:bg-gray-900",
-      variant === 'desktop' ? "sticky overflow-hidden top-24 max-h-[calc(100vh-100px)]" : cn("rounded-lg border mb-6"),
+      variant === 'desktop' ? "sticky top-24" : "rounded-lg border mb-6",
+      "max-h-[600px] overflow-hidden",
       className
     )}>
       <div 

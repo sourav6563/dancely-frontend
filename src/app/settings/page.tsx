@@ -72,6 +72,13 @@ export default function SettingsPage() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/png'];
+      if (!validTypes.includes(file.type)) {
+        toast.error('Invalid format. Only JPEG and PNG are allowed.');
+        return;
+      }
+
       if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
         toast.error(`Image must be less than ${MAX_IMAGE_SIZE_MB}MB`);
         return;
@@ -269,7 +276,7 @@ export default function SettingsPage() {
                             <Input
                               id="picture"
                               type="file"
-                              accept="image/*"
+                              accept="image/jpeg,image/png"
                               className="hidden"
                               onChange={handleImageChange}
                             />

@@ -2,7 +2,8 @@
 
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+
+
 import { Button } from '@/components/ui/button';
 
 /**
@@ -11,21 +12,8 @@ import { Button } from '@/components/ui/button';
  */
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  // Hydration mismatch is handled by next-themes and CSS classes (dark:scale-0 etc.)
 
-  // Avoid hydration mismatch
-  useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="icon" className="relative">
-        <Sun className="h-5 w-5" />
-      </Button>
-    );
-  }
 
   return (
     <Button

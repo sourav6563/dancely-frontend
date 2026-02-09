@@ -136,7 +136,7 @@ export function Comments({ videoId, comments, isLoading }: CommentsProps) {
               <p className="text-muted-foreground">No comments yet. Be the first to comment!</p>
             </Card>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
               {comments.map((comment) => (
                 <CommentItem 
                   key={comment._id} 
