@@ -8,13 +8,17 @@ type Props = {
 // Fetch video data for metadata
 async function getVideo(videoId: string) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+    console.log(`[Metadata] Fetching video: ${videoId} from ${apiUrl}`);
     try {
         const res = await fetch(`${apiUrl}/video/${videoId}`, { next: { revalidate: 60 } });
-        if (!res.ok) return null;
+        if (!res.ok) {
+            console.error(`[Metadata] Fetch failed: ${res.status} ${res.statusText}`);
+            return null;
+        }
         const data = await res.json();
         return data.data;
     } catch (error) {
-        console.error("Error fetching video metadata:", error);
+        console.error("[Metadata] Error fetching video metadata:", error);
         return null;
     }
 }
