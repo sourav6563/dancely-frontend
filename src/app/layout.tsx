@@ -24,31 +24,50 @@ export const metadata: Metadata = {
     template: "%s | Dancely",
   },
   description: "Upload, share, and discover amazing dance videos from dancers around the world. Join the community and showcase your talent.",
-  keywords: ["dance", "video sharing", "dancers", "choreography", "dance community", "social media for dancers"],
+  keywords: [
+    "dance", 
+    "video sharing", 
+    "dancers", 
+    "choreography", 
+    "dance community", 
+    "social media for dancers",
+    "upload dance videos",
+    "learn dance",
+    "dance challenges",
+    "hip hop dance",
+    "contemporary dance",
+    "ballet",
+    "street dance"
+  ],
   authors: [{ name: "Dancely Team" }],
   creator: "Dancely",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://dancely.in",
     title: "Dancely - The Ultimate Dance Video Platform",
-    description: "Discover the best dance talent, learn new moves, and share your passion with the world on Dancely.",
+    description: "Discover the best dance talent, learn new moves, and share your passion with the world on Dancely. Join our community today.",
     siteName: "Dancely",
     images: [
       {
-        url: "/og-image.jpg", // You'll need to add an actual image at public/og-image.jpg
+        url: "/og-image-v2.jpg", 
         width: 1200,
         height: 630,
-        alt: "Dancely Platform Preview",
+        alt: "Dancely Platform Preview - Share Your Dance Moves",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Dancely - Share Your Dance Moves",
-    description: "Join the world's most vibrant dance community. Upload and watch amazing dance videos.",
-    creator: "@dancely", // Replace with actual handle if available
-    images: ["/og-image.jpg"],
+    description: "Join the world's most vibrant dance community. Upload and watch amazing dance videos from creators worldwide.",
+    creator: "@dancely", 
+    images: ["/og-image-v2.jpg"],
   },
   robots: {
     index: true,
