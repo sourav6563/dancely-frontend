@@ -10,16 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { DeleteAlertDialog } from "@/components/ui/delete-alert-dialog";
 import {
   Form,
   FormControl,
@@ -341,29 +332,14 @@ export function EditVideoModal({ video, isOpen, onClose }: EditVideoModalProps) 
       </DialogContent>
     </Dialog>
 
-    <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
-        <AlertDialogContent className="dark:bg-gray-900 dark:border-gray-800">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this video?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your video 
-              and remove it from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault();
-                handleDelete();
-              }}
-              className="bg-red-600 hover:bg-red-700 text-white focus:ring-red-600"
-            >
-              {deleteVideo.isPending ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+    <DeleteAlertDialog 
+        open={showDeleteAlert} 
+        onOpenChange={setShowDeleteAlert}
+        title="Delete Video"
+        description="Are you sure you want to delete this video? This action cannot be undone."
+        onDelete={handleDelete}
+        isDeleting={deleteVideo.isPending}
+      />
     </>
   );
 }

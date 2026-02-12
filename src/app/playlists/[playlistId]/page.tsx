@@ -178,7 +178,7 @@ export default function PlaylistInternalPage() {
 
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Sidebar: Playlist Info */}
-            <div className="lg:w-1/3 lg:sticky lg:top-24 h-fit">
+            <div className="lg:w-1/3 lg:sticky lg:top-24 h-fit lg:shrink-0">
               <Card className="p-4 sm:p-6 overflow-hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-purple-100 dark:border-gray-800 shadow-xl rounded-2xl">
                 {/* Thumbnail */}
                 <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden mb-4 sm:mb-6 shadow-md group">
@@ -319,7 +319,7 @@ export default function PlaylistInternalPage() {
             </div>
 
             {/* Right Side: Videos List */}
-            <div className="flex-1 space-y-4">
+            <div className="flex-1 min-w-0 space-y-4">
               {playlist.videos.length === 0 ? (
                 <Card className="p-12 text-center bg-transparent border-dashed border-2">
                    <p className="text-gray-500 text-lg">No videos in this playlist yet.</p>
@@ -336,7 +336,7 @@ export default function PlaylistInternalPage() {
                   return (
                     <div 
                       key={video._id} 
-                      className={`group flex gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md transition-all border border-gray-200 dark:border-gray-800 cursor-pointer bg-white dark:bg-gray-900 items-center ${isRemoving ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`group flex gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-md transition-all border border-gray-200 dark:border-gray-800 cursor-pointer bg-white dark:bg-gray-900 items-center w-full max-w-full overflow-hidden ${isRemoving ? 'opacity-50 pointer-events-none' : ''}`}
                       onClick={() => router.push(`/watch/${video._id}?playlistId=${playlist._id}`)}
                     >
                     {/* Index */}
@@ -365,8 +365,8 @@ export default function PlaylistInternalPage() {
                     </div>
 
                     {/* Meta */}
-                    <div className="flex-1 min-w-0 flex flex-col justify-center">
-                      <h3 className="font-semibold text-foreground line-clamp-2 text-sm sm:text-base md:text-lg mb-1 transition-colors">
+                    <div className="flex-1 min-w-0 w-full flex flex-col justify-center">
+                      <h3 className="font-semibold text-foreground line-clamp-2 text-sm sm:text-base md:text-lg mb-1 transition-colors break-all">
                         {video.title}
                       </h3>
                        {/* We might not have channel name in basic video object used for playlist, logic depends on backend population */}
@@ -384,7 +384,6 @@ export default function PlaylistInternalPage() {
                              e.stopPropagation();
                              handleRemoveVideo(video._id);
                            }}
-                           title="Remove from playlist"
                          >
                            <Trash2 className="h-4 w-4" />
                          </Button>
@@ -412,8 +411,7 @@ export default function PlaylistInternalPage() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the playlist
-                  <span className="font-semibold text-foreground"> &quot;{playlist?.name}&quot; </span>
+                  This action cannot be undone. This will permanently delete this playlist
                   and remove it from our servers.
                 </AlertDialogDescription>
               </AlertDialogHeader>
@@ -450,7 +448,7 @@ export default function PlaylistInternalPage() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Remove video from playlist?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to remove this video from <span className="font-semibold">&quot;{playlist?.name}&quot;</span>?
+                  Are you sure you want to remove this video from this playlist?
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

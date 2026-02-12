@@ -19,16 +19,7 @@ import { formatDistanceToNow } from 'date-fns';
 import type { Playlist } from '@/types';
 import { EditPlaylistModal } from './EditPlaylistModal';
 import { useDeletePlaylist, useUpdatePlaylist } from '@/lib/hooks/usePlaylists';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { DeleteAlertDialog } from "@/components/ui/delete-alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -188,29 +179,14 @@ export function PlaylistCard({ playlist, isOwner = false }: PlaylistCardProps) {
         onOpenChange={setIsEditOpen} 
       />
 
-      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
-        <AlertDialogContent className="dark:bg-gray-900 dark:border-gray-800">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Playlist?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this playlist? This cannot be undone.
-              (Videos inside will not be deleted)
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault();
-                handleDelete();
-              }}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteAlertDialog 
+        open={showDeleteAlert} 
+        onOpenChange={setShowDeleteAlert}
+        title="Delete Playlist"
+        description="Are you sure you want to delete this playlist? This action cannot be undone. Videos inside will not be deleted."
+        onDelete={handleDelete}
+        isDeleting={deletePlaylist.isPending}
+      />
     </>
   );
 }

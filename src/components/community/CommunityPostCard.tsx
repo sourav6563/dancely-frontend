@@ -16,16 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { DeleteAlertDialog } from "@/components/ui/delete-alert-dialog";
 import { useAuth } from '@/context/AuthContext';
 import { useDeletePost } from '@/lib/hooks/useCommunity';
 import { usePostComments } from '@/lib/hooks/usePostComments';
@@ -186,32 +177,21 @@ export function CommunityPostCard({ post, onLike }: CommunityPostCardProps) {
         )}
       </CardFooter>
       
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent className="bg-white dark:bg-gray-900 dark:border-gray-800">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Post</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this post? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-             <AlertDialogCancel onClick={() => setShowDeleteDialog(false)}>Cancel</AlertDialogCancel>
-             <AlertDialogAction 
-               className="bg-red-600 hover:bg-red-700 focus:ring-red-600 text-white"
-               onClick={() => {
-                 setShowDeleteDialog(false);
-                 toast.promise(deletePost.mutateAsync(post._id), {
-                   loading: 'Deleting post...',
-                   success: 'Post deleted successfully',
-                   error: 'Failed to delete post'
-                 });
-               }}
-             >
-               Delete
-             </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteAlertDialog 
+        open={showDeleteDialog} 
+        onOpenChange={setShowDeleteDialog}
+        title="Delete Post"
+        description="Are you sure you want to delete this post? This action cannot be undone."
+        onDelete={() => {
+          toast.promise(deletePost.mutateAsync(post._id), {
+            loading: 'Deleting post...',
+            success: 'Post deleted successfully',
+            error: 'Failed to delete post'
+          });
+          setShowDeleteDialog(false);
+        }}
+        isDeleting={deletePost.isPending}
+      />
     </Card>
   );
 }

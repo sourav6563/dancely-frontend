@@ -5,20 +5,11 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Loader2, Trash2, Heart } from 'lucide-react';
+import { Trash2, Heart } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useDeleteComment, useToggleCommentLike } from '@/lib/hooks/useVideoWatch';
 import type { CommentWithStats, User } from '@/types';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { DeleteAlertDialog } from "@/components/ui/delete-alert-dialog";
 
 import { toast } from "sonner";
 
@@ -44,21 +35,6 @@ export const CommentItem = memo(function CommentItem({ comment, user, videoId }:
   // We use the full content always, but wrap it in a fixed height scrollable container
   // toggled by isExpanded state (which now enables scrolling vs truncation)
 
-
-  const confirmDelete = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (commentToDelete) {
-      const promise = deleteComment.mutateAsync(commentToDelete);
-      
-      toast.promise(promise, {
-        loading: 'Deleting comment...',
-        success: 'Comment deleted successfully',
-        error: (err) => err?.response?.data?.message || 'Failed to delete comment',
-      });
-      
-      setCommentToDelete(null); 
-    }
-  };
 
   return (
     <>
@@ -149,33 +125,26 @@ export const CommentItem = memo(function CommentItem({ comment, user, videoId }:
         </div>
       </Card>
 
-      <AlertDialog open={!!commentToDelete} onOpenChange={(open) => !open && setCommentToDelete(null)}>
-        <AlertDialogContent className="bg-white dark:bg-gray-900 dark:border-gray-800">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Comment</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this comment? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteComment.isPending} onClick={() => setCommentToDelete(null)}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700 focus:ring-red-600 text-white"
-              onClick={confirmDelete}
-              disabled={deleteComment.isPending}
-            >
-              {deleteComment.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                'Delete'
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteAlertDialog 
+        open={!!commentToDelete}
+        onOpenChange={(open) => !open && setCommentToDelete(null)}
+        title="Delete Comment"
+        description="Are you sure you want to delete this comment? This action cannot be undone."
+        onDelete={() => {
+           if (commentToDelete) {
+            const promise = deleteComment.mutateAsync(commentToDelete);
+            
+            toast.promise(promise, {
+              loading: 'Deleting comment...',
+              success: 'Comment deleted successfully',
+              error: (err) => err?.response?.data?.message || 'Failed to delete comment',
+            });
+            
+            setCommentToDelete(null); 
+          }
+        }}
+        isDeleting={deleteComment.isPending}
+      />
     </>
   );
 });
