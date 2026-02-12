@@ -53,21 +53,12 @@ export const metadata: Metadata = {
     title: "Dancely - The Ultimate Dance Video Platform",
     description: "Discover the best dance talent, learn new moves, and share your passion with the world on Dancely. Join our community today.",
     siteName: "Dancely",
-    images: [
-      {
-        url: "/og-image-v2.jpg", 
-        width: 1200,
-        height: 630,
-        alt: "Dancely Platform Preview - Share Your Dance Moves",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Dancely - Share Your Dance Moves",
     description: "Join the world's most vibrant dance community. Upload and watch amazing dance videos from creators worldwide.",
     creator: "@dancely", 
-    images: ["/og-image-v2.jpg"],
   },
   robots: {
     index: true,
