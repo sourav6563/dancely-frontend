@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata } from 'next';
 import WatchVideoClient from './WatchVideoClient';
 
 type Props = {
@@ -20,8 +20,7 @@ async function getVideo(videoId: string) {
 }
 
 export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
+  { params }: Props
 ): Promise<Metadata> {
   const { videoId } = await params;
   const video = await getVideo(videoId);
@@ -32,7 +31,7 @@ export async function generateMetadata(
     };
   }
 
-  const previousImages = (await parent).openGraph?.images || [];
+
 
   return {
     title: video.title,
@@ -48,7 +47,6 @@ export async function generateMetadata(
                 width: 1280,
                 height: 720,
             },
-            ...previousImages,
         ],
         videos: [
             {
