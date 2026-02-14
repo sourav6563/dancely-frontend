@@ -102,6 +102,13 @@ Reusable components are built on shadcn/ui primitives using Tailwind CSS for sty
 - **Form State**: react-hook-form with Zod validation.
 - **UI State**: Local component state for modals, dialogs, loading indicators.
 
+#### 7. SEO & Metadata
+The application implements comprehensive SEO strategies:
+- **Metadata**: Global configuration in `layout.tsx` for Title, Description, OpenGraph, and Twitter cards.
+- **Sitemap**: Dynamic `sitemap.ts` generates a valid XML sitemap for search engine indexing.
+- **Robots**: `robots.ts` directs crawlers to the sitemap and defines access rules.
+- **Manifest**: `manifest.ts` provides PWA metadata (icons, theme colors) for installability.
+
 ## Getting Started
 
 ### Prerequisites
