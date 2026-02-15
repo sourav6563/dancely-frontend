@@ -107,6 +107,7 @@ export default function WatchVideo() {
                     height="1080"
                     src={video?.videoFile.public_id || video?.videoFile.url || ''}
                     autoplay="always"
+                    playsinline
                     controls
                     muted={false}
                     logo={false}

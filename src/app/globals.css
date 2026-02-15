@@ -170,3 +170,11 @@
   background-color: #9333ea !important;
 }
 
+/* Fix stuck tooltip on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .cld-video-player .vjs-mouse-display,
+  .cld-video-player .vjs-time-tooltip {
+    display: none !important;
+  }
+}
+
