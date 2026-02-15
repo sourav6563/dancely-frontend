@@ -101,7 +101,7 @@ export default function WatchVideo() {
                 {isLoading ? (
                 <Skeleton className="aspect-video w-full rounded-lg" />
               ) : (
-              <div className="bg-black rounded-lg overflow-hidden aspect-video border border-border/50 shadow-xl [&_.cld-video-player]:h-full [&_.cld-video-player]:w-full">
+              <div className="rounded-lg overflow-hidden aspect-video border border-border/50 shadow-xl [&_.cld-video-player]:h-full [&_.cld-video-player]:w-full">
                   <CldVideoPlayer
                     width="1920"
                     height="1080"
