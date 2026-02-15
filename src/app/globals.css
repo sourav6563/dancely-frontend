@@ -165,4 +165,21 @@
     scrollbar-width: none;  /* Firefox */
 }
 
+/* Cloudinary Video Player Customization */
+/* Purple Progress Bar */
+.cld-video-player .vjs-play-progress {
+  background-color: #9333ea !important; /* purple-600 */
+}
+
+/* Fix for sticky tooltip/thumbnail on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .cld-video-player .vjs-time-tooltip,
+  .cld-video-player .vjs-mouse-display, 
+  .vjs-mouse-display .vjs-time-tooltip {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
 
