@@ -57,9 +57,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleAuthInvalidated = () => {
       // Set user data to null so React shows the landing page
-      // DO NOT use window.location.href here! It causes an infinite reload loop:
-      // reload → /auth/me fails → refresh fails → auth-invalidated → reload → repeat
-      // Unlike manual logout, cookies are NOT cleared here, so a reload would just fail again.
+      // DO NOT use window.location.href or router.push here!
+      // The backend now clears stale cookies in the refresh-token response,
+      // so we just need to update React state — no navigation needed.
+      // Using window.location.href would cause an unnecessary reload cycle.
       queryClient.setQueryData(['auth', 'me'], null);
     };
 
