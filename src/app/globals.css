@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "next-cloudinary/dist/cld-video-player.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -163,3 +164,9 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
+/* Cloudinary Video Player - Purple progress bar only */
+.cld-video-player .vjs-play-progress {
+  background-color: #9333ea !important;
+}
+

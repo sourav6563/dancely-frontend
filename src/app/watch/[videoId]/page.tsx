@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/layout/Navbar';
+import { CldVideoPlayer } from 'next-cloudinary';
 import { Comments } from '@/components/comments/Comments';
 import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -101,17 +102,18 @@ export default function WatchVideo() {
                 <Skeleton className="aspect-video w-full rounded-lg" />
               ) : (
               <div className="bg-black rounded-lg overflow-hidden aspect-video border border-border/50 shadow-xl [&_.cld-video-player]:h-full [&_.cld-video-player]:w-full">
-                  <video
-                    className="w-full h-full object-contain bg-black"
+                  <CldVideoPlayer
+                    width="1920"
+                    height="1080"
+                    src={video?.videoFile.public_id || video?.videoFile.url || ''}
+                    autoplay="always"
                     controls
-                    autoPlay
-                    playsInline
+                    muted={false}
+                    logo={false}
                     poster={video?.thumbnail.url}
-                    src={video?.videoFile.url}
                     onEnded={handleVideoEnded}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                    className="w-full h-full"
+                  />
                 </div>
               )}
 
