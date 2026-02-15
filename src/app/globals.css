@@ -170,11 +170,35 @@
   background-color: #9333ea !important;
 }
 
-/* Hide all tooltips on mobile touch devices */
+/* Hide all tooltips on mobile devices - Multi-layered approach for cross-browser consistency */
+
+/* Method 1: Touch-only devices */
 @media (hover: none) and (pointer: coarse) {
   .cld-video-player .vjs-mouse-display,
   .cld-video-player .vjs-time-tooltip {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
+/* Method 2: Explicit mobile viewport breakpoint (catches devices where hover detection fails) */
+@media (max-width: 768px) {
+  .cld-video-player .vjs-mouse-display,
+  .cld-video-player .vjs-time-tooltip {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
+/* Method 3: Any touch-capable device (including hybrid devices) */
+@media (pointer: coarse) {
+  .cld-video-player .vjs-mouse-display,
+  .cld-video-player .vjs-time-tooltip {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 }
 
