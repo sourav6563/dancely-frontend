@@ -55,7 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleAuthInvalidated = () => {
       // Clear all cached data to reset auth state
-      queryClient.clear();
+      // queryClient.clear(); // This triggers a refetch loop
+      queryClient.setQueryData(['auth', 'me'], null);
       // The user will now see the landing page since isAuthenticated will be false
     };
 

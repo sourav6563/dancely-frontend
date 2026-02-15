@@ -69,7 +69,11 @@ api.interceptors.response.use(
 
       // Only try to refresh if the token is specifically expired.
       // For other 401 errors (missing/invalid token), just reject
-      if (errorMessage !== "ACCESS_TOKEN_EXPIRED") {
+      if (
+        errorMessage !== "ACCESS_TOKEN_EXPIRED" &&
+        errorMessage !== "UNAUTHORIZED" &&
+        error.response?.statusText !== "Unauthorized"
+      ) {
         return Promise.reject(error);
       }
 
