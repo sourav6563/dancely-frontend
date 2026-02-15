@@ -170,19 +170,11 @@
   background-color: #9333ea !important;
 }
 
-/* Mobile: Show time tooltip but hide video thumbnail preview */
+/* Hide all tooltips on mobile touch devices */
 @media (hover: none) and (pointer: coarse) {
-  /* Hide video thumbnail preview */
-  .cld-video-player .vjs-mouse-display {
-    display: none !important;
-  }
-  
-  /* Keep time tooltip visible */
+  .cld-video-player .vjs-mouse-display,
   .cld-video-player .vjs-time-tooltip {
-    display: block !important;
-    position: absolute !important;
-    bottom: 2.5em !important;
-    pointer-events: none !important;
+    display: none !important;
   }
 }
 
