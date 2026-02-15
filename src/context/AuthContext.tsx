@@ -35,23 +35,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Cleanup function for logout (used in both success and error cases)
   const handleLogoutCleanup = () => {
-    // Clear all cached data first
-    // Remove all cached queries instead of clearing the entire client context
-    // This is safer for preventing hydration mismatches in strict browsers (like Brave)
+    // Remove all cached queries to clear stale data
+    // Using removeQueries() instead of clear() to prevent hydration issues in Brave
     queryClient.removeQueries();
-    // Then set user data to null immediately to prevent loading state
-    // This ensures LandingPage with Login/Join buttons is shown right away
+    // Set user data to null so React immediately shows the landing page
     queryClient.setQueryData(['auth', 'me'], null);
     
-    // Force a hard navigation to the home page
-    // This clears all JS state and ensures no ghost event listeners remain (Fixes Brave issue)
-    window.location.href = '/';
+    // Navigate to home page using React router (smooth transition)
+    // Backend already clears cookies in the logout response, so hard reload isn't needed
+    router.push('/');
     
-    // Reset logout state after a delay to ensure transition is complete
-    // and prevent ProtectedRoute from redirecting to login
+    // Reset logout state after navigation completes
+    // Prevents ProtectedRoute from redirecting to /login during the transition
     setTimeout(() => {
       setIsLoggingOut(false);
-    }, 2000);
+    }, 500);
   };
 
   // Listen for auth-invalidated events from the API client
