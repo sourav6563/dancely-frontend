@@ -58,12 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // This happens when refresh token fails, indicating stale auth state
   useEffect(() => {
     const handleAuthInvalidated = () => {
-      // Clear all cached data to reset auth state
-      // queryClient.clear(); // This triggers a refetch loop
-      // Force a hard refresh to the home page
-      // This ensures a clean state and fixes button interactivity issues in Brave
-      // just like the manual logout does.
-      window.location.href = '/';
+      // Set user data to null so React shows the landing page
+      // DO NOT use window.location.href here! It causes an infinite reload loop:
+      // reload → /auth/me fails → refresh fails → auth-invalidated → reload → repeat
+      // Unlike manual logout, cookies are NOT cleared here, so a reload would just fail again.
+      queryClient.setQueryData(['auth', 'me'], null);
     };
 
     window.addEventListener('auth-invalidated', handleAuthInvalidated);
