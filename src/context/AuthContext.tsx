@@ -43,7 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // This ensures LandingPage with Login/Join buttons is shown right away
     queryClient.setQueryData(['auth', 'me'], null);
     
-    router.push('/');
+    // Force a hard navigation to the home page
+    // This clears all JS state and ensures no ghost event listeners remain (Fixes Brave issue)
+    window.location.href = '/';
     
     // Reset logout state after a delay to ensure transition is complete
     // and prevent ProtectedRoute from redirecting to login
