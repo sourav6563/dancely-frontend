@@ -171,16 +171,5 @@
   background-color: #9333ea !important; /* purple-600 */
 }
 
-/* Fix for sticky tooltip/thumbnail on mobile */
-/* Targeted at touch devices AND small screens to cover all mobile cases */
-@media (hover: none) and (pointer: coarse), (max-width: 1024px) {
-  .cld-video-player .vjs-time-tooltip,
-  .cld-video-player .vjs-mouse-display, 
-  .vjs-mouse-display .vjs-time-tooltip {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-  }
-}
 
 
