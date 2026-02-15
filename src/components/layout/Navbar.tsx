@@ -91,10 +91,10 @@ export function Navbar() {
 
           {/* Navigation Links & User Menu */}
           {isLoading ? (
-             <div className="flex items-center space-x-4">
-               <Skeleton className="h-9 w-20 rounded-md" />
-               <Skeleton className="h-9 w-20 rounded-md" />
-               <Skeleton className="h-10 w-10 rounded-full" />
+             <div className="flex items-center space-x-2 sm:space-x-4">
+               <Skeleton className="hidden sm:block h-9 w-20 rounded-md" />
+               <Skeleton className="hidden sm:block h-9 w-20 rounded-md" />
+               <Skeleton className="h-8 w-8 sm:h-10 sm:w-10 rounded-full" />
              </div>
           ) : isAuthenticated && user ? (
             <div className="flex items-center space-x-2 sm:space-x-6">
