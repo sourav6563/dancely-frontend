@@ -111,6 +111,12 @@ export default function WatchVideo() {
                     controls
                     muted={false}
                     logo={false}
+                    colors={{
+                      accent: '#9333ea',
+                      base: '#000000',
+                      text: '#ffffff'
+                    }}
+                    seekThumbnails={false}
                     poster={video?.thumbnail.url}
                     onEnded={handleVideoEnded}
                     className="w-full h-full"

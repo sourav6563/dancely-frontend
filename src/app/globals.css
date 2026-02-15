@@ -165,11 +165,7 @@
     scrollbar-width: none;  /* Firefox */
 }
 
-/* Cloudinary Video Player Customization */
-/* Purple Progress Bar */
-.cld-video-player .vjs-play-progress {
-  background-color: #9333ea !important; /* purple-600 */
-}
+
 
 
 
