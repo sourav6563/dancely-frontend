@@ -103,14 +103,16 @@ export default function WatchVideo() {
               ) : (
               <div className="rounded-lg aspect-video border border-border/50 shadow-xl overflow-hidden [&_.cld-video-player]:h-full [&_.cld-video-player]:w-full">
                   <CldVideoPlayer
+                    key={video?._id}
                     width="1920"
                     height="1080"
                     src={video?.videoFile.public_id || video?.videoFile.url || ''}
-                    autoplay="always"
+                    autoplay={true}
                     playsinline
                     controls
                     muted={false}
                     logo={false}
+                    sourceTypes={['mp4']}
                     colors={{
                       accent: '#9333ea',
                       base: '#000000',
