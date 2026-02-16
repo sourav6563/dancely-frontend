@@ -172,17 +172,5 @@
 
 
 
-/* Fix mobile scrubbing issue */
-.vjs-progress-control {
-  touch-action: none;
-}
 
-/* Fix stuck thumbnails on mobile (Touch devices + Small screens) */
-@media (max-width: 768px), (hover: none) {
-  /* Force HIDE mouse display and time tooltip completely on mobile */
-  .vjs-mouse-display, 
-  .vjs-time-tooltip {
-     display: none !important;
-  }
-}
 
