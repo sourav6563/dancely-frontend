@@ -170,14 +170,12 @@
 
 
 
+
+
 /* Fix mobile scrubbing issue */
 .vjs-progress-control {
   touch-action: none;
 }
-
-/* Fix stuck thumbnails on mobile (touch devices) */
-
-/* Fix stuck thumbnails on mobile (Touch devices + Small screens) */
 
 /* Fix stuck thumbnails on mobile (Touch devices + Small screens) */
 @media (max-width: 768px), (hover: none) {
@@ -187,3 +185,4 @@
      display: none !important;
   }
 }
+
