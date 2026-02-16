@@ -166,8 +166,8 @@
   scrollbar-width: none; /* Firefox */
 }
 
-/* Fix stuck thumbnails on mobile (Touch devices + Small screens) */
-@media (max-width: 768px), (hover: none) {
+/* Fix stuck thumbnails on mobile/tablet (Touch devices + Screens up to 1024px) */
+@media (max-width: 1024px), (hover: none) {
   /* Force HIDE mouse display and time tooltip completely on mobile */
   .vjs-mouse-display,
   .vjs-time-tooltip {

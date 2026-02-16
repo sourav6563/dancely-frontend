@@ -112,7 +112,13 @@ export default function WatchVideo() {
                     controls
                     muted={false}
                     logo={false}
-                    sourceTypes={['mp4']}
+                    sourceTypes={['hls', 'mp4']}
+                    // @ts-expect-error qualitySelector might be missing in types but valid in runtime
+                    qualitySelector={true}
+
+                    sourceTransformation={{
+                      hls: [{ streaming_profile: 'hd' }],
+                    }}
                     colors={{
                       accent: '#9333ea',
                       base: '#000000',

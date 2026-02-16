@@ -21,7 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { videoApi } from '@/lib/api/videos';
 import type { ApiError } from '@/types';
 import { toast } from 'sonner';
@@ -34,6 +34,7 @@ import { AxiosProgressEvent } from 'axios';
  */
 export default function UploadPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [title, setTitle] = useState('');
   const [titleError, setTitleError] = useState('');
   const [description, setDescription] = useState('');
@@ -61,11 +62,13 @@ export default function UploadPage() {
       );
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setIsSuccess(true);
       toast.success('Video uploaded successfully!');
+      // Invalidate dashboard videos cache so new video appears instantly
+      queryClient.invalidateQueries({ queryKey: ['videos', 'my'] });
       setTimeout(() => {
-        router.push(`/watch/${data._id}`);
+        router.push('/dashboard');
       }, 2000);
     },
     onError: (error: ApiError) => {
@@ -203,7 +206,7 @@ export default function UploadPage() {
                   Upload Successful!
                 </CardTitle>
                 <CardDescription className="dark:text-gray-400">
-                  Your video has been uploaded. Redirecting to watch page...
+                  Your video has been uploaded. Redirecting to your dashboard...
                 </CardDescription>
               </CardHeader>
             </Card>
