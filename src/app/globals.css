@@ -127,7 +127,8 @@
 
 /* Custom animations */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -156,45 +157,20 @@
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
-
-
-
-
-
-
-
-
-
-
-
-/* Fix mobile scrubbing issue - Target specific controls to prevent scroll interference */
-.vjs-progress-control,
-.vjs-progress-holder, 
-.vjs-play-progress,
-.vjs-slider {
-  touch-action: none !important;
-}
-
-/* Increase touch target for the progress slider on mobile */
-.vjs-progress-control:hover .vjs-progress-holder,
-.vjs-progress-control .vjs-progress-holder {
-  font-size: 1.5em; /* Effectively increases the play bar height hit area */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* Fix stuck thumbnails on mobile (Touch devices + Small screens) */
 @media (max-width: 768px), (hover: none) {
   /* Force HIDE mouse display and time tooltip completely on mobile */
-  .vjs-mouse-display, 
+  .vjs-mouse-display,
   .vjs-time-tooltip {
-     display: none !important;
+    display: none !important;
   }
 }
