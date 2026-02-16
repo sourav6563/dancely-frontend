@@ -101,7 +101,7 @@ export default function WatchVideo() {
                 {isLoading ? (
                 <Skeleton className="aspect-video w-full rounded-lg" />
               ) : (
-              <div className="rounded-lg overflow-hidden aspect-video border border-border/50 shadow-xl [&_.cld-video-player]:h-full [&_.cld-video-player]:w-full">
+              <div className="rounded-lg aspect-video border border-border/50 shadow-xl [&_.cld-video-player]:h-full [&_.cld-video-player]:w-full">
                   <CldVideoPlayer
                     width="1920"
                     height="1080"
@@ -116,7 +116,7 @@ export default function WatchVideo() {
                       base: '#000000',
                       text: '#ffffff'
                     }}
-                    seekThumbnails={false}
+                    seekThumbnails={true}
                     poster={video?.thumbnail.url}
                     onEnded={handleVideoEnded}
                     className="w-full h-full"

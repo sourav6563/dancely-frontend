@@ -169,3 +169,8 @@
 
 
 
+
+/* Fix mobile scrubbing issue */
+.vjs-progress-control {
+  touch-action: none;
+}
