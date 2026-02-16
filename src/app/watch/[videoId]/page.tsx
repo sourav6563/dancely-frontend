@@ -124,7 +124,7 @@ export default function WatchVideo() {
                       base: '#000000',
                       text: '#ffffff'
                     }}
-                    seekThumbnails={true}
+                    seekThumbnails={false}
                     poster={video?.thumbnail.url}
                     onEnded={handleVideoEnded}
                     className="w-full h-full"
