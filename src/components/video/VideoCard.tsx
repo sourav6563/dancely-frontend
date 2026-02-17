@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useRef, useMemo } from 'react';
-import { CldVideoPlayer } from 'next-cloudinary';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -75,17 +74,16 @@ export function VideoCard({
         >
           {isHovered && enablePreview ? (
             <div className="absolute inset-0 z-10 animate-in fade-in duration-300">
-               <CldVideoPlayer
+             <video
                 width="640"
                 height="360"
-                src={video.videoFile.public_id || previewUrl}
-                autoplay="always"
+                src={previewUrl}
+                autoPlay
                 muted
                 loop
-                controls={false}
-                logo={false}
+                playsInline
+                className="w-full h-full object-cover block"
                 poster={video.thumbnail.url}
-                className="w-full h-full object-cover"
               /> 
             </div>
           ) : (

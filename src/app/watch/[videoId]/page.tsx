@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/layout/Navbar';
-import { CldVideoPlayer } from 'next-cloudinary';
+import { getCldVideoUrl } from 'next-cloudinary';
 import { Comments } from '@/components/comments/Comments';
 import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -49,6 +49,17 @@ export default function WatchVideo() {
   
   const toggleLike = useToggleVideoLike();
   const toggleFollow = useToggleFollow();
+  
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    if (descriptionRef.current) {
+      // Check if content overflows the max-height container
+      const { scrollHeight, clientHeight } = descriptionRef.current;
+      setIsTruncated(scrollHeight > clientHeight);
+    }
+  }, [video?.description]); // Re-run when description changes
 
   const handleVideoEnded = () => {
     if (playlist && playlist.videos) {
@@ -59,6 +70,7 @@ export default function WatchVideo() {
       }
     }
   };
+
 
   const handleLike = () => {
     if (video) {
@@ -101,34 +113,26 @@ export default function WatchVideo() {
                 {isLoading ? (
                 <Skeleton className="aspect-video w-full rounded-lg" />
               ) : (
-              <div className="rounded-lg aspect-video border border-border/50 shadow-xl overflow-hidden select-none relative z-0 [&_.cld-video-player]:h-full [&_.cld-video-player]:w-full [&_video]:rounded-lg">
-                  <CldVideoPlayer
+              <div 
+                className="w-full rounded-lg shadow-xl overflow-hidden select-none relative z-0 flex flex-col justify-center leading-none"
+              >
+                  <video
                     key={video?._id}
-                    width="1920"
-                    height="1080"
-                    src={video?.videoFile.public_id || video?.videoFile.url || ''}
-                    autoplay={true}
-                    playsinline
-                    controls
-                    muted={false}
-                    logo={false}
-                    sourceTypes={['hls', 'mp4']}
-                    // @ts-expect-error qualitySelector might be missing in types but valid in runtime
-                    qualitySelector={true}
-
-                    sourceTransformation={{
-                      hls: [{ streaming_profile: 'hd' }],
-                    }}
-                    colors={{
-                      accent: '#9333ea',
-                      base: '#000000',
-                      text: '#ffffff'
-                    }}
-                    seekThumbnails={true}
+                    className="w-full h-auto object-cover bg-black outline-none block -mb-px"
+                    src={video?.videoFile.public_id ? getCldVideoUrl({
+                      src: video.videoFile.public_id,
+                      quality: 'auto',
+                      format: 'auto'
+                    }) : video?.videoFile.url || ''}
                     poster={video?.thumbnail.url}
+                    controls
+                    autoPlay
+                    playsInline
+                    preload="metadata"
                     onEnded={handleVideoEnded}
-                    className="w-full h-full"
-                  />
+                  >
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
               )}
 
@@ -282,8 +286,8 @@ export default function WatchVideo() {
                   {video.description && video.description.trim() && (
                     <div className="bg-muted/30 rounded-xl overflow-hidden transition-all duration-300">
                        <div 
-                          className={`p-3 sm:p-4 transition-colors ${video.description.length > 150 ? 'cursor-pointer hover:bg-muted/50' : ''}`}
-                          onClick={() => video.description.length > 150 && setIsDescriptionExpanded(!isDescriptionExpanded)}
+                          className={`p-3 sm:p-4 transition-colors ${isTruncated ? 'cursor-pointer hover:bg-muted/50' : ''}`}
+                          onClick={() => isTruncated && setIsDescriptionExpanded(!isDescriptionExpanded)}
                        >
                           <div className="flex items-center gap-3 font-semibold text-xs sm:text-sm mb-2 text-foreground">
                              <span>{formatViews(video.views)} views</span>
@@ -291,28 +295,22 @@ export default function WatchVideo() {
                              <span>{formatDistanceToNow(new Date(video.createdAt), { addSuffix: true })}</span>
                           </div>
                           <div 
+                             ref={descriptionRef}
                              className={`relative overflow-hidden transition-all duration-300 ease-in-out ${
-                                isDescriptionExpanded ? 'max-h-125' : 'max-h-18'
+                                isDescriptionExpanded ? '' : 'max-h-20'
                              }`}
+                             style={isDescriptionExpanded ? { maxHeight: 'none' } : {}}
                           >
                              <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed wrap-break-word">
                                 {video.description}
                              </p>
-                             {!isDescriptionExpanded && video.description.length > 150 && (
+                             {!isDescriptionExpanded && isTruncated && (
                                 <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-muted/30 to-transparent pointer-events-none" />
                              )}
                           </div>
-                          {video.description.length > 150 && (
+                          {isTruncated && (
                             <div className="mt-2 pt-2 flex items-center gap-1 text-xs font-semibold text-foreground/70 hover:text-foreground transition-colors">
                                <span>{isDescriptionExpanded ? 'Show less' : 'Show more'}</span>
-                               <svg 
-                                  className={`w-4 h-4 transition-transform duration-300 ${isDescriptionExpanded ? 'rotate-180' : ''}`} 
-                                  fill="none" 
-                                  stroke="currentColor" 
-                                  viewBox="0 0 24 24"
-                               >
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                               </svg>
                             </div>
                           )}
                        </div>
