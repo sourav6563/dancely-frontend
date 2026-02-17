@@ -31,7 +31,6 @@ import {
 import { useMyVideos, useDeleteVideo, useTogglePublishStatus } from '@/lib/hooks/useDashboard';
 import { toast } from 'sonner';
 import {
-  Video,
   Trash2,
   Eye,
   EyeOff,
@@ -114,12 +113,15 @@ export default function DashboardPage() {
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400">Manage all your uploaded videos</p>
               </div>
-              <Link href="/upload">
-                <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload
-                </Button>
-              </Link>
+              {/* Only show top upload button if videos exist */}
+              {!videosLoading && videosData && videosData.docs.length > 0 && (
+                <Link href="/upload">
+                  <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg shadow-purple-500/20">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload
+                  </Button>
+                </Link>
+              )}
             </div>
 
             {/* Stats Overview */}
@@ -282,21 +284,27 @@ export default function DashboardPage() {
 
             {/* Empty State */}
             {!videosLoading && videosData && videosData.docs.length === 0 && (
-              <Card className="p-12 text-center dark:bg-gray-900 dark:border-gray-800">
-                <Video className="h-24 w-24 mx-auto text-gray-300 dark:text-gray-600 mb-6" />
-                <h3 className="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  No videos yet
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Start sharing your amazing dance moves with the world!
-                </p>
-                <Link href="/upload">
-                  <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                    <Upload className="mr-2 h-5 w-5" />
-                    Upload Your First Video
-                  </Button>
-                </Link>
-              </Card>
+              <div className="flex flex-col items-center justify-center py-12 px-4">
+                 <div className="text-center max-w-sm w-full">
+                    <div className="mx-auto h-16 w-16 rounded-full bg-linear-to-br from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 flex items-center justify-center mb-6 shadow-sm">
+                       <Upload className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <h2 className="text-xl font-bold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-3">
+                       No videos yet
+                    </h2>
+                    <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
+                       Upload your first video to start your journey.
+                    </p>
+                    <Link href="/upload">
+                       <Button 
+                          className="rounded-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md shadow-purple-500/20 active:scale-95 transition-all"
+                       >
+                          <Upload className="mr-2 h-4 w-4" />
+                          Upload First Video
+                       </Button>
+                    </Link>
+                 </div>
+              </div>
             )}
           </div>
         </div>

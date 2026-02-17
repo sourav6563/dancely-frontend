@@ -297,16 +297,21 @@ export default function WatchVideo() {
                           <div 
                              ref={descriptionRef}
                              className={`relative overflow-hidden transition-all duration-300 ease-in-out ${
-                                isDescriptionExpanded ? '' : 'max-h-20'
+                                isDescriptionExpanded ? '' : 'max-h-18'
                              }`}
-                             style={isDescriptionExpanded ? { maxHeight: 'none' } : {}}
+                             style={{
+                                maxHeight: isDescriptionExpanded ? 'none' : undefined,
+                                maskImage: (!isDescriptionExpanded && isTruncated) 
+                                   ? 'linear-gradient(to bottom, black 60%, transparent 100%)' 
+                                   : 'none',
+                                WebkitMaskImage: (!isDescriptionExpanded && isTruncated) 
+                                   ? 'linear-gradient(to bottom, black 60%, transparent 100%)' 
+                                   : 'none'
+                             }}
                           >
                              <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed wrap-break-word">
                                 {video.description}
                              </p>
-                             {!isDescriptionExpanded && isTruncated && (
-                                <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-muted/30 to-transparent pointer-events-none" />
-                             )}
                           </div>
                           {isTruncated && (
                             <div className="mt-2 pt-2 flex items-center gap-1 text-xs font-semibold text-foreground/70 hover:text-foreground transition-colors">
