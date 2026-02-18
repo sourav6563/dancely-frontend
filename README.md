@@ -15,6 +15,19 @@ This document provides a comprehensive overview of the Dancely Frontend, a high-
 | Backend Repository | https://github.com/sourav6563/dancely-backend |
 | Frontend Repository | https://github.com/sourav6563/dancely-frontend |
 
+## Demo Credentials
+Use the following credentials to access the demo account:
+
+**Email**
+```
+dancelydemo@gmail.com
+```
+
+**Password**
+```
+Dancely@3900
+```
+
 The frontend application provides a rich set of interactive features mapped available to specific routes:
 
 | Feature Domain | Capabilities | Primary Route |
