@@ -282,18 +282,21 @@ export default function WatchVideo() {
                     onClose={() => setIsShareModalOpen(false)}
                   />
 
-                  {/* Description Box - Only show if description exists */}
-                  {video.description && video.description.trim() && (
-                    <div className="bg-muted/30 rounded-xl overflow-hidden transition-all duration-300">
+                  {/* Video Metadata & Description */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 font-semibold text-xs sm:text-sm text-foreground">
+                      <span>{formatViews(video.views)} views</span>
+                      <span>•</span>
+                      <span>{formatDistanceToNow(new Date(video.createdAt), { addSuffix: true })}</span>
+                    </div>
+
+                    {/* Description Box - Only show if description exists */}
+                    {video.description && video.description.trim() && (
+                      <div className="bg-muted/30 rounded-xl overflow-hidden transition-all duration-300">
                        <div 
                           className={`p-3 sm:p-4 transition-colors ${isTruncated ? 'cursor-pointer hover:bg-muted/50' : ''}`}
                           onClick={() => isTruncated && setIsDescriptionExpanded(!isDescriptionExpanded)}
                        >
-                          <div className="flex items-center gap-3 font-semibold text-xs sm:text-sm mb-2 text-foreground">
-                             <span>{formatViews(video.views)} views</span>
-                             <span>•</span>
-                             <span>{formatDistanceToNow(new Date(video.createdAt), { addSuffix: true })}</span>
-                          </div>
                           <div 
                              ref={descriptionRef}
                              className={`relative overflow-hidden transition-all duration-300 ease-in-out ${
@@ -321,6 +324,8 @@ export default function WatchVideo() {
                        </div>
                     </div>
                   )}
+                </div>
+
                 </div>
               ) : null}
 
