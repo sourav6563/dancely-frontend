@@ -13,7 +13,6 @@ This document provides a comprehensive overview of the Dancely Frontend, a high-
 | Live Application | https://www.dancely.in |
 | Documentation | https://docs.dancely.in |
 | Backend Repository | https://github.com/sourav6563/dancely-backend |
-| Frontend Repository | https://github.com/sourav6563/dancely-frontend |
 
 ## Demo Credentials
 Use the following credentials to access the demo account:
