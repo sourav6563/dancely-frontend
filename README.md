@@ -15,7 +15,7 @@ This document provides a comprehensive overview of the Dancely Frontend, a high-
 | Backend Repository | https://github.com/sourav6563/dancely-backend |
 
 ## Demo Credentials
-Use the following credentials to access the demo account:
+Use the following credentials to access the demo account :
 
 **Email**
 ```
