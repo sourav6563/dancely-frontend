@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useRef, useMemo } from 'react';
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ShareVideoModal } from '@/components/video/ShareVideoModal';
 import { Eye, Clock, MoreVertical, ListPlus, Heart, Share2 } from 'lucide-react';
 import { AddToPlaylistModal } from '@/components/playlist/AddToPlaylistModal';
-import { formatDuration, formatViews, getVideoPreviewUrl } from '@/lib/utils';
+import { formatDuration, formatViews } from '@/lib/utils';
 import type { Video } from '@/types';
 
 interface VideoCardProps {
@@ -24,7 +24,6 @@ interface VideoCardProps {
   hideOwner?: boolean;
   thumbnailOverlay?: React.ReactNode;
   afterTitleContent?: React.ReactNode;
-  enablePreview?: boolean;
 }
 
 /**
@@ -38,28 +37,9 @@ export function VideoCard({
   hideOwner = false,
   thumbnailOverlay,
   afterTitleContent,
-  enablePreview = false 
 }: VideoCardProps) {
   const [isAddToPlaylistOpen, setIsAddToPlaylistOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const previewUrl = useMemo(() => getVideoPreviewUrl(video.videoFile), [video.videoFile]);
-
-  const handleMouseEnter = () => {
-    // Small delay to prevent accidental triggers when moving mouse across grid
-    if (enablePreview) {
-      timeoutRef.current = setTimeout(() => {
-        setIsHovered(true);
-      }, 800);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setIsHovered(false);
-  };
 
   return (
     <Card 
@@ -69,24 +49,7 @@ export function VideoCard({
       <Link href={`/watch/${video._id}`}>
         <div 
           className="relative aspect-video bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 overflow-hidden cursor-pointer"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
         >
-          {isHovered && enablePreview ? (
-            <div className="absolute inset-0 z-10 animate-in fade-in duration-300">
-             <video
-                width="640"
-                height="360"
-                src={previewUrl}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover block"
-                poster={video.thumbnail.url}
-              /> 
-            </div>
-          ) : (
              <Image
                 src={video.thumbnail.url}
                 alt={video.title}
@@ -94,10 +57,9 @@ export function VideoCard({
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
-          )}
           
           {/* Gradient overlay on hover */}
-          <div className={`absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`} />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
           {/* Custom Overlay (e.g. Public/Private badge) */}
           {thumbnailOverlay && (

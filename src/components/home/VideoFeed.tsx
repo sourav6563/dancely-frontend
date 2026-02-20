@@ -98,7 +98,6 @@ export function VideoFeed() {
               {data.pages.map((page) =>
                 page.docs.map((video) => (
                   <VideoCard
-                    enablePreview={true}
                     key={video._id}
                     video={video}
                     onLike={handleLike}

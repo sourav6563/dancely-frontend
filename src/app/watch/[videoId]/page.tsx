@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/layout/Navbar';
-import { getCldVideoUrl } from 'next-cloudinary';
 import { Comments } from '@/components/comments/Comments';
 import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -119,11 +118,7 @@ export default function WatchVideo() {
                   <video
                     key={video?._id}
                     className="w-full h-auto object-cover bg-black outline-none block -mb-px"
-                    src={video?.videoFile.public_id ? getCldVideoUrl({
-                      src: video.videoFile.public_id,
-                      quality: 'auto',
-                      format: 'auto'
-                    }) : video?.videoFile.url || ''}
+                    src={video?.videoFile.url ? video.videoFile.url.replace('/upload/', '/upload/q_auto/') : ''}
                     poster={video?.thumbnail.url}
                     controls
                     autoPlay
