@@ -31,7 +31,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); 
 
   // Cleanup function for logout (used in both success and error cases)
   const handleLogoutCleanup = () => {
@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryClient.setQueryData(['auth', 'me'], null);
     
     // Navigate to home page using React router (smooth transition)
-    // Backend already clears cookies in the logout response, so hard reload isn't needed
+    // Backend already clears cookies in the logout response, so hard reload isnot needed
     router.push('/');
     
     // Reset logout state after navigation completes
