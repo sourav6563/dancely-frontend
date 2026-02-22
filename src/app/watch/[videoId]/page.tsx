@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { AddToPlaylistModal } from '@/components/playlist/AddToPlaylistModal';
 import { EditVideoModal } from '@/components/video/EditVideoModal';
 import { formatDistanceToNow } from 'date-fns';
+import { toast } from 'sonner';
 import { formatViews } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 import { usePlaylist } from '@/lib/hooks/usePlaylists';
@@ -72,12 +73,20 @@ export default function WatchVideo() {
 
 
   const handleLike = () => {
+    if (!user) {
+      toast.error('Please log in to like videos');
+      return;
+    }
     if (video) {
       toggleLike.mutate(video._id);
     }
   };
 
   const handleFollow = () => {
+    if (!user) {
+      toast.error('Please log in to follow creators');
+      return;
+    }
     if (video) {
       toggleFollow.mutate(video.owner._id);
     }

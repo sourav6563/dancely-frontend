@@ -94,10 +94,10 @@ export function useToggleVideoLike() {
       }
       toast.error(error.response?.data?.message || "Failed to like video. Please try again.");
     },
-    onSettled: (data, error, videoId) => {
-      // Always refetch after error or success to ensure sync
-      queryClient.invalidateQueries({ queryKey: ["video", videoId] });
-      queryClient.invalidateQueries({ queryKey: ["videos"] }); // Also update lists
+    onSettled: () => {
+      // Only invalidate list queries — NOT the single video query,
+      // because re-fetching getVideoById from the backend increments the view count.
+      queryClient.invalidateQueries({ queryKey: ["videos"] }); // video list
       queryClient.invalidateQueries({ queryKey: ["watchHistory"] });
       queryClient.invalidateQueries({ queryKey: ["videos", "liked"] });
     },
@@ -194,8 +194,9 @@ export function useToggleFollow() {
       );
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["videos"] });
-      queryClient.invalidateQueries({ queryKey: ["video"] });
+      // Only invalidate list queries — NOT the single video query,
+      // because re-fetching getVideoById from the backend increments the view count.
+      queryClient.invalidateQueries({ queryKey: ["videos"] }); // video list
       queryClient.invalidateQueries({ queryKey: ["user", "profile"] });
     },
   });

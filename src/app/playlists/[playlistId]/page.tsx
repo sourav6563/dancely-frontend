@@ -366,7 +366,7 @@ export default function PlaylistInternalPage() {
 
                     {/* Meta */}
                     <div className="flex-1 min-w-0 w-full flex flex-col justify-center">
-                      <h3 className="font-semibold text-foreground line-clamp-2 text-sm sm:text-base md:text-lg mb-1 transition-colors break-all">
+                      <h3 className="font-semibold text-foreground line-clamp-2 text-sm sm:text-base md:text-lg mb-1 transition-colors wrap-break-word">
                         {video.title}
                       </h3>
                        {/* We might not have channel name in basic video object used for playlist, logic depends on backend population */}

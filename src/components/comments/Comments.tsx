@@ -132,11 +132,11 @@ export function Comments({ videoId, comments, isLoading }: CommentsProps) {
               ))}
             </div>
           ) : comments.length === 0 ? (
-            <Card className="p-8 text-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
-              <p className="text-muted-foreground">No comments yet. Be the first to comment!</p>
+            <Card className="p-4 text-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+              <p className="text-sm text-muted-foreground">No comments yet. Be the first to comment!</p>
             </Card>
           ) : (
-            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
               {comments.map((comment) => (
                 <CommentItem 
                   key={comment._id} 
