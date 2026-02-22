@@ -7,15 +7,6 @@ import { authApi } from '@/lib/api/auth';
 import type { User, LoginCredentials, RegisterData, ApiError } from '@/types';
 import { toast } from 'sonner';
 
-/**
- * Authentication Context
- * Manages user authentication state across the application
- * 
- * This context provides:
- * - Current user data
- * - Login/logout functions
- * - Authentication status
- */
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
@@ -31,36 +22,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [isLoggingOut, setIsLoggingOut] = useState(false); 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  // Cleanup function for logout (used in both success and error cases)
   const handleLogoutCleanup = () => {
-    // Remove all cached queries to clear stale data
-    // Using removeQueries() instead of clear() to prevent hydration issues in Brave
+    // removeQueries() prevents hydration issues (vs clear())
     queryClient.removeQueries();
-    // Set user data to null so React immediately shows the landing page
     queryClient.setQueryData(['auth', 'me'], null);
-    
-    // Navigate to home page using React router (smooth transition)
-    // Backend already clears cookies in the logout response, so hard reload isnot needed
     router.push('/');
-    
-    // Reset logout state after navigation completes
-    // Prevents ProtectedRoute from redirecting to /login during the transition
     setTimeout(() => {
       setIsLoggingOut(false);
     }, 500);
   };
 
-  // Listen for auth-invalidated events from the API client
-  // This happens when refresh token fails, indicating stale auth state
+  // Listen for auth-invalidated events when refresh token fails
   useEffect(() => {
     const handleAuthInvalidated = () => {
-      // Set user data to null so React shows the landing page
-      // DO NOT use window.location.href or router.push here!
-      // The backend now clears stale cookies in the refresh-token response,
-      // so we just need to update React state — no navigation needed.
-      // Using window.location.href would cause an unnecessary reload cycle.
       queryClient.setQueryData(['auth', 'me'], null);
     };
 
@@ -70,7 +46,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [queryClient]);
 
-  // Fetch current user if token exists
   const {
     data: userData,
     isLoading,
@@ -82,24 +57,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     retry: (failureCount, error: ApiError) => {
       const status = error.response?.status;
-      // Don't retry on client errors (401, 403, 404), as these mean the user is genuinely not authenticated
-      if (status && status >= 400 && status < 500) {
-        return false;
-      }
-      // Retry up to 3 times for network/server errors
+      if (status && status >= 400 && status < 500) return false;
       return failureCount < 3;
     },
-    staleTime: 1000 * 60 * 5, // Cache user data for 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 
-  // Login mutation
   const loginMutation = useMutation({
     mutationFn: authApi.login,
     onSuccess: (response) => {
-      // Update the user data in cache
       queryClient.setQueryData(['auth', 'me'], response.data);
       toast.success('Logged in successfully!');
-      // Navigation is now handled by the component calling login
     },
     onError: (error: ApiError) => {
       if (error.response?.status === 400 && error.response?.data?.message === "You are already logged in") {
@@ -112,7 +80,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
     onMutate: () => {
@@ -123,17 +90,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       handleLogoutCleanup();
     },
     onError: () => {
-      // Even if API fails, clear local state
       handleLogoutCleanup();
     },
   });
 
-  // Register mutation
   const registerMutation = useMutation({
     mutationFn: authApi.register,
     onSuccess: (response, variables) => {
       toast.success('Registration successful! Please verify your email.');
-      // Redirect to verify email page with email in state
       router.push(`/verify-email?email=${variables.email}`);
     },
     onError: () => {
@@ -160,13 +124,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-/**
- * Hook to use authentication context
- * Use this in any component that needs auth state or functions
- * 
- * Example:
- * const { user, isAuthenticated, login, logout } = useAuth();
- */
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
