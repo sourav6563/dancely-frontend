@@ -78,8 +78,8 @@ export function PlaylistCard({ playlist, isOwner = false }: PlaylistCardProps) {
                 unoptimized={true}
               />
             ) : (
-              <div className="flex items-center justify-center w-full h-full bg-gray-200 dark:bg-gray-800">
-                <PlaySquare className="h-12 w-12 text-gray-400 dark:text-gray-600" />
+              <div className="flex items-center justify-center w-full h-full bg-linear-to-br from-gray-200 to-gray-300 dark:bg-none dark:from-transparent dark:to-transparent">
+                <PlaySquare className="h-12 w-12 text-gray-400 dark:text-gray-500" />
               </div>
             )}
 

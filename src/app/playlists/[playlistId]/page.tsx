@@ -192,8 +192,8 @@ export default function PlaylistInternalPage() {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex items-center justify-center w-full h-full bg-linear-to-br from-gray-100 to-gray-200">
-                      <PlaySquare className="h-16 w-16 text-gray-400" />
+                    <div className="flex items-center justify-center w-full h-full bg-linear-to-br from-gray-100 to-gray-200 dark:bg-none dark:from-transparent dark:to-transparent">
+                      <PlaySquare className="h-16 w-16 text-gray-400 dark:text-gray-500" />
                     </div>
                   )}
                   {/* Published Status Badge */}
@@ -360,13 +360,13 @@ export default function PlaylistInternalPage() {
                           unoptimized
                         />
                       ) : (
-                        <ListVideo className="h-8 w-8 text-gray-400" />
+                        <ListVideo className="h-8 w-8 text-gray-400 dark:text-blue-400/70" />
                       )}
                     </div>
 
                     {/* Meta */}
                     <div className="flex-1 min-w-0 w-full flex flex-col justify-center">
-                      <h3 className="font-semibold text-foreground line-clamp-2 text-sm sm:text-base md:text-lg mb-1 transition-colors wrap-break-word">
+                      <h3 className="font-semibold text-foreground line-clamp-2 text-sm sm:text-sm md:text-base mb-1 transition-colors wrap-break-word">
                         {video.title}
                       </h3>
                        {/* We might not have channel name in basic video object used for playlist, logic depends on backend population */}

@@ -53,7 +53,7 @@ export default function PlaylistsPage() {
             </div>
 
             {/* Search Bar */}
-            <div className="relative mb-8 max-w-md">
+            <div className="relative mb-8 w-full sm:max-w-sm md:max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search playlists..."
